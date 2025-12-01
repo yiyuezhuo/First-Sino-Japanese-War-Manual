@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="176mm"
+   viewBox="0 0 210 176"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   sodipodi:docname="naval transfer mission allocation.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="346.83588"
+     inkscape:cy="308.65211"
+     inkscape:window-width="2560"
+     inkscape:window-height="1351"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <rect
+       x="36.769554"
+       y="789.83826"
+       width="230.51682"
+       height="62.225395"
+       id="rect20" />
+    <rect
+       x="91.923882"
+       y="595.38391"
+       width="156.2706"
+       height="33.941128"
+       id="rect19" />
+    <rect
+       x="36.769554"
+       y="789.83826"
+       width="231.93102"
+       height="57.27565"
+       id="rect20-8" />
+    <rect
+       x="36.769554"
+       y="789.83826"
+       width="228.39548"
+       height="50.91169"
+       id="rect20-8-2" />
+    <rect
+       x="91.923882"
+       y="595.38391"
+       width="156.2706"
+       height="33.941128"
+       id="rect19-0" />
+    <rect
+       x="91.923882"
+       y="595.38391"
+       width="156.2706"
+       height="33.941128"
+       id="rect19-0-3" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ffffff;stroke:#999999;stroke-width:0.2;stroke-miterlimit:0;stroke-dasharray:none"
+       id="rect27"
+       width="233.11247"
+       height="189.33372"
+       x="-14.03165"
+       y="-8.7931681"
+       inkscape:label="background" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+       d="M 23.136133,77.174108 55.415299,63.415778"
+       id="path4" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.959539;stroke-miterlimit:0;stroke-dasharray:none"
+       d="M 87.749996,77.582588 55.140582,63.262488"
+       id="path5" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+       d="m 54.886133,77.174108 0.396875,-13.89062"
+       id="path6" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+       d="m 119.86097,77.361198 32.27917,-13.75833"
+       id="path14" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.959539;stroke-miterlimit:0;stroke-dasharray:none"
+       d="m 184.47484,77.769678 -32.60942,-14.3201"
+       id="path15" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+       d="m 151.61097,77.361198 0.39688,-13.89062"
+       id="path16" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+       d="M 56.687866,45.649634 103.27294,28.437478"
+       id="path17" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.999242;stroke-miterlimit:0;stroke-dasharray:none"
+       d="m 103.08349,28.807622 49.77031,17.5944"
+       id="path18" />
+    <path
+       style="fill:#000000;stroke:#000000;stroke-width:0.253994;stroke-miterlimit:0"
+       d="m 63.815136,144.14589 -0.16645,4.12802 -54.8626617,0.0333 c 0,0 0.765682,-0.79897 0.798973,-0.99871 0.03329,-0.19975 -1.531361,-1.13188 -1.631232,-1.36491 -0.09987,-0.23303 -0.332904,-0.49936 -0.09987,-0.79897 0.233034,-0.29962 0.998714,-0.66581 0.998714,-0.66581 l 4.5275037,-0.0999 0.13316,-1.032 c 0,0 0.06658,-0.0666 0.199742,-0.0666 0.133164,0 0.233033,0.33291 0.233033,0.33291 0,0 -0.199742,0.0666 -0.199742,0.19974 0,0.13316 0.03329,0.59923 0.03329,0.59923 l 0.699099,-0.0333 -0.03329,-0.36619 1.597941,-0.0333 v 0.39948 l 1.564655,0.0333 c 0,0 0.06658,-0.26632 0.233028,-0.26632 0.166455,0 0.332906,0.29961 0.332906,0.29961 h 0.765682 c 0,0 -0.133165,-0.73239 -0.03329,-0.86555 0.09987,-0.13316 0.09987,-0.33291 0.299615,-0.33291 0.199742,0 0.299611,0.26633 0.233034,0.39949 -0.06658,0.13316 -0.299616,0 -0.299616,0.19975 0,0.19974 0.09987,0.59922 0.09987,0.59922 l 9.62094,-0.0666 -0.03329,-1.06529 c 0,0 -0.03329,-0.0666 0.133165,-0.0999 0.166451,-0.0333 0.332902,0.46606 0.332902,0.46606 l 2.763106,-0.0333 c 0,0 0.09987,0.0666 0,-0.13316 -0.09987,-0.19974 -0.06658,-0.36619 0.09987,-0.3329 0.166455,0.0333 0.166455,0.49935 0.166455,0.49935 l -0.09987,0.56594 1.065297,0.0333 c 0,0 0.166451,-0.26633 0.366193,-0.3662 0.199742,-0.0999 0.399484,0.0999 0.399484,0.0999 l -0.03329,0.33291 h 0.932137 v -0.53265 l 0.499353,-0.0333 c 0,0 0.03329,-0.99871 0.06658,-1.19845 0.03329,-0.19975 0.332902,-0.53265 0.466066,-0.49936 0.13316,0.0333 0.13316,0.53265 0.13316,0.53265 0,0 -0.09987,-0.0666 -0.166451,0.0999 -0.06658,0.16645 -0.06658,0.99871 -0.06658,0.99871 l 0.532648,0.0333 c 0,0 -0.03329,-0.59923 0.06658,-0.73239 0.09987,-0.13316 0.166456,-0.13316 0.166456,-0.13316 l -0.299616,-4.82712 1.597941,-0.0666 0.366198,4.86041 0.09987,0.0666 0.09987,0.89884 0.466066,-0.13317 c 0,0 -0.13316,-0.86555 0,-1.16516 0.13316,-0.29961 0.599226,-0.3329 0.599226,-0.3329 v 0.56593 l -0.189927,0.0375 0.01177,0.89452 c 0,0 0.117698,-0.0118 0.200092,0.0824 0.08239,0.0942 0.07062,0.42372 0.07062,0.42372 l 0.541417,0.0118 0.04707,-2.17744 1.953812,-0.0471 0.09416,0.94159 0.447256,-0.0588 -0.04707,-0.25894 c 0,0 -0.117699,0.0118 -0.141236,-0.0471 -0.02353,-0.0589 0.01177,-0.63557 0.01177,-0.63557 l 0.553183,-0.0353 -0.01177,0.75327 -0.117698,-0.0353 0.105932,0.28248 0.353095,0.0235 -0.08239,-0.95337 0.776818,0.0824 0.01177,1.43594 0.729738,0.0235 v 1.74195 l 7.156128,-0.0353 c 0,0 -0.0471,-0.47079 0.0235,-0.58849 0.0706,-0.11771 0.40018,-0.18832 0.40018,-0.18832 l 0.0706,0.40018 c 0,0 -0.0235,0 -0.0706,0.16477 -0.0471,0.16478 3.88408,0.1177 3.88408,0.1177 l 0.18832,-0.68265 0.61203,-0.0471 c 0,0 -0.2354,-0.94159 0.0235,-0.98867 0.25894,-0.0471 0.5885,0.14123 0.5885,0.14123 l -0.0235,0.80036 2.51877,0.0471 c 0,0 0.0471,-0.32956 0.25894,-0.32956 0.21186,0 0.28247,0.25894 0.28247,0.25894 l 1.85966,0.0471 -1.67133,-1.48301 1.71841,0.63558 -0.1177,0.82389 c 0,0 0.49433,-0.16478 0.58849,-0.2354 0.0942,-0.0706 0.62654,0.0543 0.62654,0.0543 z"
+       id="path1" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.2;stroke-miterlimit:0;stroke-dasharray:none"
+       d="m 9.1673443,69.409898 c 0,0 25.0698827,-3.55469 32.3663387,-2.05798 7.29646,1.49671 28.624567,5.79975 29.560012,9.16735 0.935442,3.36759 0.374177,23.760262 -2.057977,25.631142 -2.432153,1.87089 -20.018486,14.9671 -27.314945,15.15419 -7.296457,0.18708 -32.9276057,-0.93545 -36.2952016,-7.48355 -3.367596,-6.5481 -1.683798,-37.417732 -0.1870888,-39.101532 1.4967097,-1.6838 3.9288617,-1.30962 3.9288617,-1.30962 z"
+       id="path21" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.2;stroke-miterlimit:0;stroke-dasharray:none"
+       d="m 60.42964,33.863047 c 2.619242,0.935445 46.95926,25.069881 57.06204,28.998741 10.10279,3.92887 38.69871,10.1902 42.65622,11.03824 5.23848,1.12253 9.16734,5.61265 8.23191,10.66405 -0.82326,4.44562 -0.002,12.29968 -2.05798,14.21874 -2.80633,2.619242 -34.7985,13.096202 -41.15951,14.780002 -6.36101,1.6838 -37.417735,-0.74835 -42.094952,-3.74177 -4.677217,-2.99342 -9.638272,-19.073152 -9.915699,-22.263552 -0.374178,-4.30304 2.619242,-10.47697 -0.561266,-13.47039 -3.180506,-2.99342 -22.824818,-6.92228 -27.689121,-9.9157 -4.864307,-2.99342 -7.29646,-14.78 -5.238483,-18.521774 2.057974,-3.741775 8.628056,-8.320388 11.786584,-10.851142 4.170562,-3.341641 8.980257,-0.935445 8.980257,-0.935445 z"
+       id="path23"
+       sodipodi:nodetypes="csssssssssssc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.2;stroke-miterlimit:0;stroke-dasharray:none"
+       d="m 75.396733,25.256969 c 0,0 37.230647,22.637729 46.023817,27.689129 8.79316,5.05139 15.52835,13.0962 18.52177,13.47038 2.99342,0.37418 26.56659,5.42557 29.18584,7.29646 2.61924,1.87088 2.61924,8.41899 2.05797,11.59949 -0.56127,3.18051 1.6838,13.47039 -3.92886,18.895962 -5.61266,5.42557 -14.21874,12.34785 -9.16735,15.15418 5.0514,2.80633 29.7471,5.23848 31.99217,5.42557 2.24506,0.18709 14.78,-8.04481 13.65747,-13.09621 -1.12253,-5.05139 2.80633,-35.359752 -1.6838,-39.849882 -4.49013,-4.49013 -50.88812,-41.907862 -55.93951,-46.210903 -5.0514,-4.303037 -31.80507,-23.0119041 -39.84989,-22.8248151 -8.04481,0.187087 -21.515194,3.554685 -23.011902,8.4189891 -1.496711,4.864306 -7.857725,14.03165 -7.857725,14.03165 z"
+       id="path24" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.2;stroke-miterlimit:0;stroke-dasharray:none"
+       d="m 34.237227,117.49168 -0.18709,16.08963"
+       id="path25" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.2;stroke-miterlimit:0;stroke-dasharray:none"
+       d="m 107.3889,114.49827 -2.43216,20.39266"
+       id="path26" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.2;stroke-miterlimit:0;stroke-dasharray:none"
+       d="m 175.86335,123.29143 -5.98684,11.41241"
+       id="path27" />
+    <g
+       id="g1"
+       transform="translate(-4.1159507,-53.133182)">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         id="rect1"
+         width="24.378637"
+         height="16.776699"
+         x="15.595863"
+         y="130.41631" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722px;font-family:SimHei;-inkscape-font-specification:'SimHei, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         x="27.781252"
+         y="140.09686"
+         id="text1"><tspan
+           sodipodi:role="line"
+           id="tspan1"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke:none;stroke-width:1"
+           x="27.781252"
+           y="140.09686">300 tons</tspan></text>
+    </g>
+    <g
+       id="g2"
+       transform="translate(-4.1159507,-53.133182)">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         id="rect1-8"
+         width="24.378637"
+         height="16.776699"
+         x="47.860416"
+         y="130.675" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722px;font-family:SimHei;-inkscape-font-specification:'SimHei, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         x="59.913513"
+         y="140.75244"
+         id="text1-8"><tspan
+           sodipodi:role="line"
+           id="tspan1-2"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke:none;stroke-width:1"
+           x="59.913513"
+           y="140.75244">300 tons</tspan></text>
+    </g>
+    <g
+       id="g4"
+       transform="translate(-3.367596,-54.068626)">
+      <rect
+         style="fill:#ffffff;stroke:#999999;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         id="rect1-7"
+         width="24.378637"
+         height="16.776699"
+         x="48.257294"
+         y="99.851028" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722px;font-family:SimHei;-inkscape-font-specification:'SimHei, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         x="60.689747"
+         y="110.03084"
+         id="text1-8-2"><tspan
+           sodipodi:role="line"
+           id="tspan1-2-3"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke:none;stroke-width:1"
+           x="60.689747"
+           y="110.03084">900 tons</tspan></text>
+    </g>
+    <g
+       id="g3"
+       transform="translate(-4.1159507,-53.133182)">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         id="rect1-8-1"
+         width="24.378637"
+         height="16.776699"
+         x="80.271881"
+         y="131.07187" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722px;font-family:SimHei;-inkscape-font-specification:'SimHei, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         x="92.324974"
+         y="141.14931"
+         id="text1-8-7"><tspan
+           sodipodi:role="line"
+           id="tspan1-2-1"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke:none;stroke-width:1"
+           x="92.324974"
+           y="141.14931">300 tons</tspan></text>
+    </g>
+    <g
+       id="g11"
+       transform="translate(92.608892,-52.946094)">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         id="rect11"
+         width="24.378637"
+         height="16.776699"
+         x="15.595863"
+         y="130.41631" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722px;font-family:SimHei;-inkscape-font-specification:'SimHei, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         x="27.781252"
+         y="140.09686"
+         id="text11"><tspan
+           sodipodi:role="line"
+           id="tspan11"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke:none;stroke-width:1"
+           x="27.781252"
+           y="140.09686">300 tons</tspan></text>
+    </g>
+    <g
+       id="g12"
+       transform="translate(92.608892,-52.946094)">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         id="rect12"
+         width="24.378637"
+         height="16.776699"
+         x="47.860416"
+         y="130.675" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722px;font-family:SimHei;-inkscape-font-specification:'SimHei, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         x="59.913513"
+         y="140.75244"
+         id="text12"><tspan
+           sodipodi:role="line"
+           id="tspan12"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke:none;stroke-width:1"
+           x="59.913513"
+           y="140.75244">300 tons</tspan></text>
+    </g>
+    <g
+       id="g13"
+       transform="translate(92.608892,-52.946094)">
+      <rect
+         style="fill:#ffffff;stroke:#999999;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         id="rect13"
+         width="24.378637"
+         height="16.776699"
+         x="48.257294"
+         y="99.851028" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722px;font-family:SimHei;-inkscape-font-specification:'SimHei, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         x="60.689747"
+         y="110.03084"
+         id="text13"><tspan
+           sodipodi:role="line"
+           id="tspan13"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke:none;stroke-width:1"
+           x="60.689747"
+           y="110.03084">900 tons</tspan></text>
+    </g>
+    <g
+       id="g13-7"
+       transform="translate(43.937465,-87.993856)">
+      <rect
+         style="fill:#ffffff;stroke:#999999;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         id="rect13-9"
+         width="24.378637"
+         height="16.776699"
+         x="48.444382"
+         y="99.66394" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722px;font-family:SimHei;-inkscape-font-specification:'SimHei, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         x="60.689747"
+         y="110.03084"
+         id="text13-5"><tspan
+           sodipodi:role="line"
+           id="tspan13-4"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke:none;stroke-width:1"
+           x="60.689747"
+           y="110.03084">1800 tons</tspan></text>
+    </g>
+    <g
+       id="g14"
+       transform="translate(92.608892,-52.946094)">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         id="rect14"
+         width="24.378637"
+         height="16.776699"
+         x="80.271881"
+         y="131.07187" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722px;font-family:SimHei;-inkscape-font-specification:'SimHei, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;stroke:#000000;stroke-width:1;stroke-miterlimit:0;stroke-dasharray:none"
+         x="92.324974"
+         y="141.14931"
+         id="text14"><tspan
+           sodipodi:role="line"
+           id="tspan14"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke:none;stroke-width:1"
+           x="92.324974"
+           y="141.14931">300 tons</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-12.347852,-52.946094)"
+       id="text19"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.3333px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect19);display:inline;fill:#000000;stroke:none;stroke-width:0.755906;stroke-miterlimit:0;stroke-dasharray:none"><tspan
+         x="100.45554"
+         y="611.19846"
+         id="tspan2">150 tons supply</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,63.701916,-53.692106)"
+       id="text19-1"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.3333px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect19-0);display:inline;fill:#000000;stroke:none;stroke-width:0.755906;stroke-miterlimit:0;stroke-dasharray:none"><tspan
+         x="100.45554"
+         y="611.19846"
+         id="tspan3">100 tons supply</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,135.95748,-46.713418)"
+       id="text19-1-6"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.3333px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect19-0-3);display:inline;fill:#000000;stroke:none;stroke-width:0.755906;stroke-miterlimit:0;stroke-dasharray:none"><tspan
+         x="100.45554"
+         y="611.19846"
+         id="tspan4">400 tons supply</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-4.3030394,-52.571916)"
+       id="text20"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.3333px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect20);display:inline;fill:#000000;stroke:none;stroke-width:0.755906;stroke-miterlimit:0;stroke-dasharray:none"><tspan
+         x="57.219911"
+         y="805.65159"
+         id="tspan5">Transport 1: 750 tons
+</tspan><tspan
+         x="85.373827"
+         y="827.31821"
+         id="tspan6">carry capability</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,63.548537,-52.419228)"
+       id="text20-0"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.3333px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect20-8);display:inline;fill:#000000;stroke:none;stroke-width:0.755906;stroke-miterlimit:0;stroke-dasharray:none"><tspan
+         x="49.370318"
+         y="805.65159"
+         id="tspan7">Transport 2: 1000 tons 
+</tspan><tspan
+         x="86.080859"
+         y="827.31821"
+         id="tspan8">carry capability</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,130.23455,-52.6206)"
+       id="text20-0-6"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.3333px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect20-8-2);display:inline;fill:#000000;stroke:none;stroke-width:0.755906;stroke-miterlimit:0;stroke-dasharray:none"><tspan
+         x="56.158387"
+         y="805.65159"
+         id="tspan9">Transport 3: 700 tons
+</tspan><tspan
+         x="84.312304"
+         y="827.31821"
+         id="tspan10">carry capability</tspan></text>
+    <use
+       x="0"
+       y="0"
+       xlink:href="#path1"
+       id="use20"
+       transform="translate(68.474453,0.74835463)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#path1"
+       id="use21"
+       transform="translate(132.64587,1.6837976)" />
+  </g>
+</svg>
