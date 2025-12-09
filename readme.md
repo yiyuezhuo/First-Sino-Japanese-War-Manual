@@ -1,10 +1,22 @@
 
+- Online (latest) version of this document: https://github.com/yiyuezhuo/First-Sino-Japanese-War-Manual
 - Game Source: https://github.com/yiyuezhuo/Late-Qing-Naval-Combat-Demo
 - Steam: https://store.steampowered.com/app/3996220/First_SinoJapanese_War/
 - Discussion: https://discord.gg/2yqbyGwsdQ
 
 # Naval Tactical Mode
 
+## Range Lines
+
+<img src="images/Range Lines.svg">
+
+- Primary Battery Range: Black
+- Secondary Battery Range: Orange
+- First Rapid Battery Range: Purple
+- Torpedo Range: Blue
+- Visibility Range: Yellow
+
+Note: Torpedo firing is based on an interception point solution; in a good firing position, the effective range is usually much longer than the range line listed above.
 ## Battery
 
 Battery related resolution is based on SEEKRIEG 5 rule (though not always identical).  Reading this manual should be sufficient to understand the related mechanism; however, for further insight, it can be instructive to consult the original SK5 rulebook, though it is behind a paywall.
@@ -201,3 +213,97 @@ The 3 non-"physical" effectiveness attribute, suppression, morale and fatigue is
 - Fatigue: fatigue is like morale, but slower to restore and harder to inflict. And some fatigue would be imposed without loss.
 
 These value with strength modify the "lethality" (a concept taken from JTS Squad Battle), which effect inflict hits and if a "breakthrough" (situation push) is achieved.
+
+# FAQ
+
+## Localization Quality Issues?
+
+The base development language is English, which remains the most polished version. If you encounter questionable translations in other languages, please verify against the English version first.
+
+Current localization approach:
+
+- **Basic UI**: English and Simplified Chinese versions are manually crafted. Japanese and Traditional Chinese are LLM-translated based on the above two languages.
+- **Remarks**: Source content with its orignal language appears at the top; translation follow below.
+- **Long Texts** (Help, tutorials, Steam page, etc.): English version are manually written; other languages are LLM-translated from English.
+- **Dynamic Content** (Damage effects, combat logs, etc.): Similar to Basic UI.
+
+## Why Don’t Ships Sink Immediately After Reaching 100% Damage Points?
+
+In the SK5 system, reaching 100% Damage Points (DP) does not guarantee a ship will sink. A vessel might survive well beyond 100% DP — or sink instantly from the first hit.
+
+DP primarily drives the generation of General Damage Effects, which can severely impair a ship’s combat capability. The 100% DP mark indicates a high probability that the ship becomes mission-killed (combat ineffective).
+
+Mechanically, 100% DP is the threshold at which General Damage Effect checks stop. Beyond this point, no further General DE rolls occur — making the ship relatively less likely to sink per additional damage taken (imagine critical explosion chances are "used up", so more hole in the shell above water has no more effect to sink the ship). That said, specific damage effects from normal hits can still cause the ship to sink.
+
+## How to Enable Movement AI
+
+Select a group in the OOB Editor, turn off "Inherited" in the automatic movement field, and set it to "Automatic." The group will then change its course according to certain principles. This setting is usually applied to a top-level group, such as "Japan Fleet" or "China Fleet," but it can also be set at a subordinate level for partial automation.
+
+The AI is still in a development state, so it is not enabled by default. The game currently recommends sandbox-style gameplay, where the player controls both sides simultaneously and observes the outcome—similar to how solitary wargamer does play their miniatures, but with help of auto-resolution powered by computer.
+
+## Editing is Not Intuitive
+
+I haven’t written related material since major rework is expected. If you really want to edit something and find it frustrating, contact me (via GitHub issue or Discord server) to let me know someone is really interested, I would write a temp document to explain how to do it in the current stage.
+
+## Why are so many standard UI elements named "Editor"? I don't want to "edit" anything—I just want to play.
+
+I aim to recreate a sandbox experience similar to Vassal and Tabletop Simulator (TTS), where editing allows players to introduce custom rules and house rules without coding. On the other hand, in games like CMO, players often use edit mode to streamline experimentation—a feature I want to incorporate into game.
+
+## Why is so much image loading done at runtime?
+
+I want to emulate Tabletop Simulator's approach of loading images dynamically during gameplay, which has both advantages and disadvantages.
+
+## Why Is the Game So Large? Shouldn't It Be a Mini Game liek RTW Given the "Minimalist" Graphics?
+
+Similar to games like CMO, the majority of the installation size comes from GIS elevation data. While titles such as Rule the Wave avoid this overhead by using vector data, this project uses raster data — even though ocean depth data has been clamped.
+
+The reason for retaining elevation data is to support a planned tactical land combat generator, which will utilize terrain elevation in future updates. Also elevation data will render location more recognizable and map pretty.
+
+## Is the Strategic Game Playable Now?
+
+No, only the naval tactical game is currently partial playable. The exposed strategic game mode only gives a *feel* for what the full strategic experience will eventually be like. 
+
+This area may also be of interest to open-source contributors, as the strategic game is now the main focus of development.
+
+## What is DE XXX (like DE 101?)
+
+DE XXX is "Damage Effect XXX" listed in SK5, though I can't list them since they're behind a paywall, you can check source code to determine their effect in this game. They're not always equivalent.
+
+# Help
+
+## Getting Started
+
+- Right-click and drag to move the camera, use the scroll wheel to adjust the zoom level.
+- Press 1 to advance by 1 minute (mouse should be in the map instead ui area)
+- Control group leader (icon with a direction arrow) to control a group
+	- Change direction: Select a group lead, then hold Shift and left-click a point on the map to set the direction.
+    - Change speed: Change value in the slider of right panel
+    - Change or inspect a lot of details in editors.
+- Use F or R to set Follow and relative to relationship, more parameter can be specified in the ShipLog editor.
+
+## Automation
+
+- By default, firing is automated, following a somewhat optimal rule, and can be configured in the editor, ranging from doctrine to manual target specification.
+- If a unit follow or is relative to a target, it will adjust its speed and course to reach the desired position.
+- By default, an independent unit (usually the group leader) maintains its current speed and course. However, if automatic movement is enabled in the doctrine, the unit will adjust its course to maximize firepower while minimizing incoming damage.
+
+## Shortcuts
+
+Basic:
+
+- Left Click: Select Unit
+- Right Click: Select Unit and open Ship Log Editor for it.
+- Shift + Left Click: Set course for the selected unit
+- D: Distance measureing line
+- S: Line of Sight (check ship masking & Earth curvature)
+- I: Detach unit (set control mode to Independent)
+- F: Set follow target (extra parameter requires ship log editor)
+- R: Set relative to target (extra parameter requires ship log editor)
+- L: Open Ship Log Editor for the selected ship
+- Esc: Reset UI to idle state.
+
+Edit:
+
+- Insert: Insert a ShipLog on map. (Deploy a "non-deployed" ship to map).
+- Delete: Delete selected ship.
+- M: Move selected ship to another point.
