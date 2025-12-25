@@ -85,6 +85,23 @@ To improve recognizability, the size of the icon/model can be increased in the s
 
 WIP
 
+## Doctrine
+
+A doctrine can be specified at any level of the OOB (at the ship log level or at a higher, more abstract group level). If a lower-level unit's doctrine is not explicitly overridden, it inherits the doctrine value from its parent unit.
+
+<img src="images/OOB Inherit.png">
+
+For the root group, if a doctrine is not **overridden**, a default value is used. Definitions of doctrines and their root default values are as follows:
+
+- **Automatic Maneuver** (Default: **Manual**): Determines whether a unit’s maneuvering (desired heading and speed) is controlled by the AI.
+- **Automatic Fire** (Default: **Automatic**): Determines whether a unit’s fire control (weapon targeting) is handled by the AI.
+- **Ammunition Fallback** (Default: **True**): If a unit’s capacity for a given ammunition type is exhausted, a “closer” ammunition type is used instead (e.g., AP fallback chain: AP → SAP → COM → HE).
+- **Ammunition Switch** (Default: **Automatic**): Determines whether the AI automatically switches a battery’s ammunition type to optimize effectiveness (e.g., using HE against unarmored targets and AP against heavily armored targets).
+- **Max Fire Distance (200 mm+ Batteries)**: If specified, batteries of 200 mm or larger will not fire at targets beyond the given range.
+- **Max Fire Distance (100 mm–200 mm Batteries)**: Same as above, but applies to 100 mm–200 mm batteries.
+- **Max Fire Distance (<100 mm Batteries)**: Same as above, but applies to rapid-fire batteries.
+- **Max Fire Distance (Torpedoes)**: Same as above, but applies to torpedoes.
+
 ## Weapon Target Assignment
 
 WIP
