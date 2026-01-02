@@ -21,7 +21,7 @@ Note: Torpedo firing is based on an interception point solution; in a good firin
 
 Battery related resolution is based on SEEKRIEG 5 rule (though not always identical).  Reading this manual should be sufficient to understand the related mechanism; however, for further insight, it can be instructive to consult the original SK5 rulebook, though it is behind a paywall.
 
-Ship Log's state items are based on the data in the Ship Class. The mapping relationship looks like this:
+Ship State's items are based on the data in the Ship Class. The mapping relationship looks like this:
 
 <img src="images/Battery.svg">
 (FCS is mapped to "Fire Control Positions").
@@ -87,7 +87,7 @@ WIP
 
 ## Doctrine
 
-A doctrine can be specified at any level of the OOB (at the ship log level or at a higher, more abstract group level). If a lower-level unit's doctrine is not explicitly overridden, it inherits the doctrine value from its parent unit.
+A doctrine can be specified at any level of the OOB (at the Ship State level or at a higher, more abstract group level). If a lower-level unit's doctrine is not explicitly overridden, it inherits the doctrine value from its parent unit.
 
 <img src="images/OOB Inherit.png">
 
@@ -102,7 +102,29 @@ For the root group, if a doctrine is not **overridden**, a default value is used
 - **Max Fire Distance (<100 mm Batteries)**: Same as above, but applies to rapid-fire batteries.
 - **Max Fire Distance (Torpedoes)**: Same as above, but applies to torpedoes.
 
+## Plot Trajectory
+
+Historical trajectory can be plotted for ship. In the Ship State View's Time Loc Tabs, click the "Plot Trajectory On Map" button above the record table:
+
+<img src="images/trajectory_plot_button.png">
+
+In the dialog, color and label can be configured:
+
+<img src="images/plot_trajectory_dialog.png">
+
+Two plotted trajectory looks like this:
+
+<img src="images/plotted_trajectory.png">
+
+The trajectory will remain visible on the map until cleared using the "Clear Trajectories" button in the Tools Tab of the Top Tabs.
+
+<img src="images/Clear Trajectories Button.png">
 ## Weapon Target Assignment
+
+### Manual
+
+WIP
+### Automation Algorithm
 
 WIP
 
@@ -309,14 +331,14 @@ DE XXX is "Damage Effect XXX" listed in SK5, though I can't list them since they
 Basic:
 
 - Left Click: Select Unit
-- Right Click: Select Unit and open Ship Log Editor for it.
+- Right Click: Select Unit and open Ship State Editor for it.
 - Shift + Left Click: Set course for the selected unit
 - D: Distance measureing line
 - S: Line of Sight (check ship masking & Earth curvature)
 - I: Detach unit (set control mode to Independent)
-- F: Set follow target (extra parameter requires ship log editor)
-- R: Set relative to target (extra parameter requires ship log editor)
-- L: Open Ship Log Editor for the selected ship
+- F: Set follow target (extra parameter requires Ship State editor)
+- R: Set relative to target (extra parameter requires Ship State editor)
+- L: Open Ship State Editor for the selected ship
 - Esc: Reset UI to idle state.
 
 Edit:
