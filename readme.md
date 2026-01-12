@@ -67,18 +67,18 @@ When a hit is scored, following procedure is performed:
 	- Penetrates And Detonates: Most Effective
 	- Not Penetrate: Least Effective
 - According to penetrate type, and use Ammo Type (AP/SAP/COM/HE), roll for Damage Effect and Damage Point inflicted.
-- In increase in Damage Point may generate additional Damage Effects, or instant sink the ship if it become too high for a turn (but 100% DP doesn't automatically sink the ship). Damage Effect themselves may also generate further Damage Effects.
+- An increase in Damage Point may generate additional Damage Effects, or instant sink the ship if it become too high for a turn (but 100% DP doesn't automatically sink the ship). Damage Effect themselves may also generate further Damage Effects.
 
-Note: Damage Effect DE XXX is the name of SK5 name, the effect can be checked in source code or SK5 material (not always identical though).
+Note: "DE XXX" is the Damage Effect name used by SK5, the effect can be checked in source code or SK5 material (not always identical though).
 ## Torpedo
 
 Torpedoes do not follow the SK5 rule, because the compromises made for tabletop play would result in a poorer system while not being any easier to implement compared to a system based on actual collision detection handled by the game engine’s physics.
 
 ### Ship Collider
 
-To improve recognizability, the size of the icon/model can be increased in the settings (just like how miniature wargames often use oversized models). However, the real collider size is maintained. Internally in the game engine, it looks like this:
+To improve recognizability, the size of the icon/model could be increased in the settings (just like how miniature wargames often use oversized models). However, the real collider size is maintained. Internally in the game engine, it looks like this:
 
-<img src="images/Collider vs Icon.png">
+<img src="images/Collider vs Icon.jpg">
 (The box represents the real collider. The LOS detection tool is based on the actual LOS, so it naturally handles curvature as well.)
 
 ### Interception Point
@@ -89,7 +89,7 @@ WIP
 
 A doctrine can be specified at any level of the OOB (at the Ship State level or at a higher, more abstract group level). If a lower-level unit's doctrine is not explicitly overridden, it inherits the doctrine value from its parent unit.
 
-<img src="images/OOB Inherit.png">
+<img src="images/OOB Inherit.svg">
 
 For the root group, if a doctrine is not **overridden**, a default value is used. Definitions of doctrines and their root default values are as follows:
 
@@ -97,14 +97,14 @@ For the root group, if a doctrine is not **overridden**, a default value is used
 - **Automatic Fire** (Default: **Automatic**): Determines whether a unit’s fire control (weapon targeting) is handled by the AI.
 - **Ammunition Fallback** (Default: **True**): If a unit’s capacity for a given ammunition type is exhausted, a “closer” ammunition type is used instead (e.g., AP fallback chain: AP → SAP → COM → HE).
 - **Ammunition Switch** (Default: **Automatic**): Determines whether the AI automatically switches a battery’s ammunition type to optimize effectiveness (e.g., using HE against unarmored targets and AP against heavily armored targets).
-- **Max Fire Distance (200 mm+ Batteries)**: If specified, batteries of 200 mm or larger will not fire at targets beyond the given range.
-- **Max Fire Distance (100 mm–200 mm Batteries)**: Same as above, but applies to 100 mm–200 mm batteries.
-- **Max Fire Distance (<100 mm Batteries)**: Same as above, but applies to rapid-fire batteries.
-- **Max Fire Distance (Torpedoes)**: Same as above, but applies to torpedoes.
+- **Max Fire Distance (200 mm+ Batteries)** (Default: **Not Specified**): If specified, batteries of 200 mm or larger will not fire at targets beyond the given range.
+- **Max Fire Distance (100 mm–200 mm Batteries)** (Default: **Not Specified**): Same as above, but applies to 100 mm–200 mm batteries.
+- **Max Fire Distance (<100 mm Batteries)** (Default: **Not Specified**): Same as above, but applies to rapid-fire batteries.
+- **Max Fire Distance (Torpedoes)** (Default: **Not Specified**): Same as above, but applies to torpedoes.
 
 ## Plot Trajectory
 
-Historical trajectory can be plotted for ship. In the Ship State View's Time Loc Tabs, click the "Plot Trajectory On Map" button above the record table:
+Game historical trajectory can be plotted for ship. In the Ship State View's Time Loc Tabs, click the "Plot Trajectory On Map" button above the record table:
 
 <img src="images/trajectory_plot_button.png">
 
@@ -114,11 +114,53 @@ In the dialog, color and label can be configured:
 
 Two plotted trajectory looks like this:
 
-<img src="images/plotted_trajectory.png">
+<img src="images/plotted_trajectory.jpg">
 
 The trajectory will remain visible on the map until cleared using the "Clear Trajectories" button in the Tools Tab of the Top Tabs.
 
 <img src="images/Clear Trajectories Button.png">
+
+## Tutorial: Make a simple custom scenario
+
+- Click "Start As Empty" in the main menu to create an empty scenario
+- The "empty" scenario is not completely empty — two top groups Red and Blue, are created. You can check them in the Top tabs - Status - Order of Battle:
+
+<img src="images/default oob.png">
+
+- Move camera to the area of interest
+- Click the Insert button while the mouse is hovering on the map (not over the UI), and click on a point on the map. A dialog will appear:
+
+<img src="images/insert ship dialog.jpg">
+
+There are three modes for inserting a ship:
+
+- **Not Deployed Ship State**: Deploy a not deployed ship (the ship is usually created manually in the Ship State Editor). This is a somewhat advanced topic and is not covered in this tutorial.
+- **Named Ship**: This create a Ship State from the selected Named Ship which is not associated with a Ship State (so that a Named Ship can only has a Ship State "embodiment") with proper initialization, and deploys it to map.
+- **Ship Class**: This creates an "anonymous" Named Ship from the selected Ship Class and create a Ship State from that new Named Ship. It is used for hypothetical scenarios involving ship classes that exceed historical quantities. Some historical information from the built-in Named Ship is lost though.
+
+Select Named Ship Yoshino (the first item in the Named Ship column), choose Blue in the "Attach to Group" Dropdown, and click the Confirm button. The historical Yoshino will be created on the map:
+
+<img src="images/after insert ship.jpg">
+
+Click Insert again to open the insert dialog, you will notice Yoshino is no longer available in the Named Ship column. However it remains available in the Ship Class columns. Insert two more "anonymous" Yoshino by Ship Class method:
+
+<img src="images/3 Yoshino.jpg">
+
+Select Yoshino1, click F or Follow button in the Top Tab and click on the Yoshino to set it to follow Yoshino. Then set Yoshino2 to follow Yoshino1. Set the desired speed of Yoshino (group leader) to 10 knots and heading to 90 degree (east). And click "Set to Formation Position" button in the Editor tab (if the button is not enabled, enable "Edit mode" in the Command tab). Position, speed and heading of ships would would be updated according to their formation relationships:
+
+<img src="images/3 ships deployed.jpg">
+
+
+Now insert two other ships, set Attach to Group to Red and click "Set to Formation Position" to arrange them:
+
+<img src="images/5 ships deployed.jpg">
+
+Switch to File Tabs, disable "Save without Streaming Asset" (required because some anonymous Named Ship were created) and click the "Save (Edit)" button to save the scenario:
+
+<img src="images/Save without Streaming Asset.png">
+
+Return to the main menu, click "Load Game" button to load the saved scenario to start to playing your new created custom scenario. 
+
 ## Weapon Target Assignment
 
 ### Manual
@@ -272,7 +314,7 @@ In the SK5 system, reaching 100% Damage Points (DP) does not guarantee a ship wi
 
 DP primarily drives the generation of General Damage Effects, which can severely impair a ship’s combat capability. The 100% DP mark indicates a high probability that the ship becomes mission-killed (combat ineffective).
 
-Mechanically, 100% DP is the threshold at which General Damage Effect checks stop. Beyond this point, no further General DE rolls occur — making the ship relatively less likely to sink per additional damage taken (imagine critical explosion chances are "used up", so more hole in the shell above water has no more effect to sink the ship). That said, specific damage effects from normal hits can still cause the ship to sink.
+Mechanically, 100% DP marks the point at which General Damage Effect checks cease. Beyond this threshold, no further General DE rolls are made, meaning that additional damage is relatively less likely to cause the ship to sink via general damage (you can think of this as the chance of catastrophic explosions, such as magazine detonations, having already been exhausted, so further shell holes above the waterline no longer increase the likelihood of sinking). That said, specific damage effects resulting from normal hits can still sink the ship.
 
 ## How to Enable Movement AI
 
