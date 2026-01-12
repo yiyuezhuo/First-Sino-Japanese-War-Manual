@@ -163,12 +163,48 @@ Return to the main menu, click "Load Game" button to load the saved scenario to 
 
 ## Weapon Target Assignment
 
-### Manual
-
-WIP
 ### Automation Algorithm
 
-WIP
+In the default doctrine, every battery, torpedo, and rapid-firing battery on a ship would be arranged separately by the algorithm to reduce hostile potential firepower effectiveness. Thus following principle apply:
+
+1. Fire Suppression: Deliver minimal firepower to enemy to create "under-fire" debuff to decrease their current fire projection.
+2. Mission Kill: Prior to attack low-survivability platform with high available firepower.
+3. Prevent Over-concentration: it is possible that some available batteries are not used.
+4. Firepower stickiness: Firing platforms tend to remain engaged with the same target to avoid target-switching debuffs and to preserve visual coherence.
+
+### Manual
+
+#### Ship-Level
+
+The ship-level manual attack target can be assigned via the information panel:
+
+<img src="images/ship-level-manual-targeting.jpg">
+
+Click A or click the button and then click on the target. When the targeting is valid, "Attack: X" prompt would be displayed.
+
+In the current implementation, this only restricts the automation algorithm's search space to prevent the ship from firing on other targets. However, the actual firing is not guaranteed, as the algorithm may deem the shot unfavorable due to the "over-concentration" penalty it introduces.
+#### Mount-level
+
+To manually perform mount-level targeting, auto-fire automation in the doctrine needs to be disabled. Otherwise automation will override manually specified value.
+##### Battery
+
+For a battery, both the mount and FCS's targets should to be set. Click the Set button and then click on a target:
+
+<img src="images/mount-level-manual-targeting.jpg">
+
+If ammo need to be manually specified, related automation in the doctrine should be disable.
+
+##### Torpedo
+
+Torpedo is similar to battery:
+
+<img src="images/mount-level-manual-targeting-torpedo.jpg">
+
+##### Rapid Firing Battery
+
+Click the "+" button to create a "targeting record", select port or starboard, then assign guns to the target. (In theory, every gun can target a different target, as there's no FCS Local Control penalty) 
+
+<img src="images/mount-level-manual-targeting-rapid-firing.jpg">
 
 # Strategic Mode
 
