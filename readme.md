@@ -150,7 +150,6 @@ Select Yoshino1, click F or Follow button in the Top Tab and click on the Yoshin
 
 <img src="images/3 ships deployed.jpg">
 
-
 Now insert two other ships, set Attach to Group to Red and click "Set to Formation Position" to arrange them:
 
 <img src="images/5 ships deployed.jpg">
@@ -206,6 +205,69 @@ Click the "+" button to create a "targeting record", select port or starboard, t
 
 <img src="images/mount-level-manual-targeting-rapid-firing.jpg">
 
+## Multiplayer
+
+The Naval Tactical Mode's WEGO mode can be played in multiplayer. The auto-playing multiplayer mode is not supported yet.
+
+The host start a "room" and other client connect to the host. Each client can assign its own Take Command units, while the host commands remaining units. For example:
+
+<img src="images/LAN_3_Windows.jpg">
+
+ In the above image, there are three game windows, the left one is the host. The right two on the right are clients connected to the host. The upper-right client takes command of the Flying Squadron, the lower-right client takes command of the Combined Fleet. As a result, the effective command partition is:
+
+- Player Tsuboi Kōzō: Command the Flying Squadron
+- Player: Itō Sukeyuki: Command the Combined Fleet excluding the Flying Squadron (since it's taken by Tsuboi Kōzō)
+- Player Ding Ruchang: Command the Beiyang Fleet (or, equivalently, all force excluding the Combined Fleet taken by Itō Sukeyuki, which results in the only remaining force, Beiyang Fleet).
+
+Note: This is a somewhat historically accurate setup. Tsuboi Kōzō, as a subordinate of Itō Sukeyuki, often executed his own commands when he believed them to be better, sometimes ignoring or misunderstanding Itō Sukeyuki orders.
+
+### How to Set This Up:
+
+- Player Ding Ruchang
+	- Select a scenario
+	- Click the Host button (Top Tabs - Networking - Host) to popup the Host dialog.
+	- Click Start to begin hosting.
+	- Change name to Ding Ruchang
+- Player Tsuboi Kōzō:
+	- Start as Empty
+	- Click the Client button (Top Tabs - Networking - Client) to popup the Client dialog.
+	- Enter the host's IP address and click Connect.
+	- The client will receive a full synchronization from the host. So the scenario does not need to exist locally for the client.
+	- Change name to Tsuboi Kōzō
+	- Tsuboi Kōzō then open OOB Editor (via hyperlink in the information panel or Top Tabs - Status - Order of Battle)
+	- Find Flying Squadron and toggle Take Command on:
+
+<img src="images/Take Command Toggle.jpg">
+
+- Player Itō Sukeyuki:
+	- Similar procedure as Tsuboi Kōzō but different name and Take Command
+	- The order of clients joining is interchangeable, but both should connect after the host has started.
+
+### Turn Execution
+
+To execute 1 WEGO step, the Host and all Clients with at least one Take Command unit must be in the Ready state before the game can advance. 
+
+Normal advance command, such as hotkeys 1~9 (advance 1~9 minutes), the backquote key (advance 1 pulse) or the corresponding buttons, issued by client will send the client's commanded unit states to the host as a Merge Request. These states are merged into the host's state only when advancement is triggered; they are not applied immediately upon arrival.
+
+Once a client submit a Merge Request, it is flagged as Ready, indicated by a checkmark in the corresponding checkbox (in the example above, the checkmark next to Tsuboi Kōzō indicates that he is ready). Before all players are ready, a ready client may still submit additional Merge Request to update his current command state.
+
+For the host:
+
+- If the host issues an advance command and is the last player to become ready, the advancement happens immediately for the specified timespan, after all client Merge Requests are merged into Host state. 
+- If Host is not the last to become ready, the advancement occurs when the final client submit its Merge Request.
+
+Depending on the synchronization mode, during advancement either:
+
+- the full state is continuously sent from the host to all clients, or  
+- the full state is sent only after advancement is completed.
+
+Afterward, players observe the newly advanced turn, make new decisions, and mark themselves as ready again to advance to the next turn.
+### Notes
+
+- Default 1-minute turn (RTW style) may be too short for WEGO multiplayer gameplay. Miniatures wargames provide alternative approaches: Seekrieg uses 2-minutes turn, while the Admiralty Trilogy uses 3-minutes turn, although they sometimes also use 1-minute turn or 30--seconds turn. A 2-minutes or 3-minute turn can be used by having host advance the simulation using hotkey 2 or 3.
+- Chat is not implemented yet. You can use external chat app like Discord.
+- This traditional LAN networking can also be used over the internet with additional tools such as Hamachi.
+- The game was not originally designed to support multiplayer, so the synchronization method is somewhat clumsy. Technically, I use overly coarse-grained commands for synchronization instead of breaking them into many smaller command, which significantly slows the game and imposes heavy traffic burden. As a result, continues-time multiplayer (similar to JTS Naval Campaign) is not implemented yet. However I may revisit this issue after completing other higher-priority work.
 # Strategic Mode
 
 ## Strategic Group & Land Unit
@@ -230,7 +292,6 @@ Navy Transfer must be carried out through a naval mission. The Non-Fleet Strateg
 ## Repair
 
 The repair system is inspired by WITP (War in the Pacific). Specifically, damage from SK5 is mapped to a simplified WITP repair model for resolution. (Sample mapping: 1 SK5 Flooding Hit ≈ 20 WITP Flooding Damage Points, or 20% flooding.)
-
 ### Tactical Naval Combat damage effect Trim
 
 When a ship’s state is synced to the strategic game, certain adjustments are applied to damage effects. Non-permanent and some specific damage effects are removed.
