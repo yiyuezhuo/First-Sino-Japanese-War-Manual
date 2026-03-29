@@ -83,7 +83,63 @@ To improve recognizability, the size of the icon/model could be increased in the
 
 ### Interception Point
 
-WIP
+Torpedo firing is solved against an interception point rather than against the target's current position. For each available torpedo speed/range setting, the game checks whether a valid interception solution exists and whether the interception distance is still within that setting's range. If multiple settings are valid, the game prefers the one with the shortest interception distance.
+
+In practice, this means:
+
+- A target that is crossing your bow or moving toward the predicted interception area is usually easier to attack than one running directly away.
+- The relevant range is the distance to the interception point, not simply the current straight-line distance to the target.
+- A shot can still be blocked even if the target looks close enough, because the mount must also have the correct firing arc, a loaded torpedo, and a doctrine-permitted firing distance.
+
+Before launching, the game also performs a torpedo safety check. If the projected shot is considered unsafe, the mount will not fire even if a mathematical interception solution exists.
+
+After launch, the torpedo becomes a real moving object on the map. It can:
+
+- hit a ship by physical collision,
+- run out of range,
+- hit land and self-destruct,
+- or become a dud.
+
+If torpedo reloading is enabled in the preference, reloading is handled per mount. If the mount has reload allowance and magazine torpedoes remaining, one reload cycle takes 360 seconds.
+
+The current build also includes a Torpedo Intercept Solution Visualizer in the top tabs. It is useful for diagnosing why a torpedo mount is not firing, because it shows whether the problem is doctrine, safety, no solution, out-of-arc firing geometry, or lack of ammunition:
+
+<img src="images/Torpedo Intercept Solution Visualizer.jpg">
+
+The blue area represents the set of possible positions of the target at the time the torpedo reaches the interception point, under the given random maneuvering model.
+
+The red area represents the positions from which the target would be hit at, before for after the moment it reaches the interception point:
+
+<img src="images/torpedo intercept solution visualizer explained.svg">
+
+
+## Damage
+
+Damage in the tactical naval game has two layers: Damage Points and Damage Effects.
+
+- **Damage Points (DP)** represent the ship's accumulated general damage.
+- **Damage Effects (DE)** represent specific consequences such as flooding, fire, reduced speed, disabled mounts, damaged fire control, smoke generator loss, and other persistent impairments.
+
+DP is important because crossing damage tiers can generate additional general damage effects. A ship with high DP is usually in serious trouble, but it is not automatically sunk just because it has reached 100% of its nominal DP capacity.
+
+Actual loss of combat capability usually comes from the specific effects attached to the ship:
+
+- propulsion and boiler damage can reduce speed and acceleration,
+- flooding in machinery spaces can sink the ship,
+- fire and other damage-control-related effects compete for limited damage control capacity,
+- weapon mounts, torpedo mounts, rapid-fire batteries, and fire control systems can all be knocked out independently.
+
+Damage control is automated. Every ship has a Damage Control Rating, and the game allocates that limited capacity to the highest-priority controllable problems first. In general, serious fires and major ongoing hazards are handled before lower-priority issues.
+
+There are also a few direct sinking paths besides normal attrition:
+
+- catastrophic damage caused by crossing too many damage tiers in a short time,
+- flooding of too many machinery spaces,
+- and certain individual damage effects.
+
+When a tactical battle is carried into the strategic layer, the game keeps the persistent damage but trims temporary combat bookkeeping. The ship's current DP is also clamped to its class maximum before being stored in the campaign state.
+
+
 
 ## Doctrine
 
@@ -272,11 +328,51 @@ Afterward, players observe the newly advanced turn, make new decisions, and mark
 
 ## Strategic Group & Land Unit
 
-WIP
+The strategic layer is built around **Strategic Groups** and **Land Units**.
+
+A Strategic Group is primarily an order-of-battle container. It can represent a fleet, base, headquarters, infantry formation, artillery formation, and other command-level formations. A group can be in one of three practical states:
+
+- **Independent**: the group is on the map and can move or fight on its own.
+- **Combined**: the group is attached under another group and shares that parent group's location.
+- **Not Deployed**: the group is off-map or temporarily removed from the map, for example while being transported.
+
+Land Units are the actual manpower-bearing subunits inside those groups. Their template defines type, quality, weapon mix, and nominal strength. The current build supports unit categories such as infantry, cavalry, artillery, mountain artillery, engineers, supply units, military police, and ports.
+
+Each land unit tracks several operational values:
+
+- **Strength**: current manpower.
+- **Suppression**: short-term combat disruption.
+- **Morale**: slower-changing combat willingness.
+- **Fatigue**: accumulated exhaustion.
+- **Supply Tons**: carried supply.
+
+In play, you usually manage these objects through two editors:
+
+- **Strategic Group Editor**: inspect hierarchy, set leader, set home base, split a group, transfer elements, or detach damaged ships.
+- **Strategic Mission Editor**: assign groups to missions and edit mission waypoints.
 
 ## Movement
 
-WIP
+Strategic movement is resolved along a planned path, one hour at a time.
+
+For land groups, speed depends mainly on terrain and infrastructure:
+
+- roads and railroads are much faster than open terrain,
+- rough, forest, swamp, and mountain terrain are slower,
+- if any non-supply land unit in the group is out of supply, the whole group's land speed is reduced.
+
+Land movement also respects control:
+
+- a land group can only keep moving if the edge toward the next hex is friendly,
+- when a land group crosses an edge, that edge's control is updated,
+- retreat movement uses a looser pathfinder than normal supply movement, but it still cannot retreat through hostile-controlled routes.
+
+For fleet groups, strategic speed is determined by the slowest deployed ship in the group, using a cruising speed rather than full tactical speed. A fleet with no supply left can still move, but only very slowly. If the game judges that the fleet no longer has enough endurance to return to its base, the current mission is interrupted and the fleet is ordered to return automatically.
+
+Naval pathfinding also has operational restrictions:
+
+- fleets cannot enter a sea cell that contains a hostile fortified base,
+- reorganizing groups do not move until the reorganization state ends.
 
 ## Supply
 
