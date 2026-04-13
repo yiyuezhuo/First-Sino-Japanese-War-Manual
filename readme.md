@@ -326,6 +326,8 @@ Afterward, players observe the newly advanced turn, make new decisions, and mark
 - The game was not originally designed to support multiplayer, so the synchronization method is somewhat clumsy. Technically, I use overly coarse-grained commands for synchronization instead of breaking them into many smaller command, which significantly slows the game and imposes heavy traffic burden. As a result, continues-time multiplayer (similar to JTS Naval Campaign) is not implemented yet. However I may revisit this issue after completing other higher-priority work.
 # Strategic Mode
 
+## Getting Started
+
 ## Strategic Group & Land Unit
 
 The strategic layer is built around **Strategic Groups** and **Land Units**.
@@ -346,11 +348,6 @@ Each land unit tracks several operational values:
 - **Fatigue**: accumulated exhaustion.
 - **Supply Tons**: carried supply.
 
-In play, you usually manage these objects through two editors:
-
-- **Strategic Group Editor**: inspect hierarchy, set leader, set home base, split a group, transfer elements, or detach damaged ships.
-- **Strategic Mission Editor**: assign groups to missions and edit mission waypoints.
-
 ## Movement
 
 Strategic movement is resolved along a planned path, one hour at a time.
@@ -361,29 +358,62 @@ For land groups, speed depends mainly on terrain and infrastructure:
 - rough, forest, swamp, and mountain terrain are slower,
 - if any non-supply land unit in the group is out of supply, the whole group's land speed is reduced.
 
-Land movement also respects control:
+For fleet groups, strategic speed is determined by the slowest deployed ship in the group, using a cruising speed rather than full tactical speed. A fleet with no supply left can still move, but only very slowly. If the game judges that the fleet no longer has enough endurance to return to its base, the fleet is ordered to return automatically.
 
-- a land group can only keep moving if the edge toward the next hex is friendly,
-- when a land group crosses an edge, that edge's control is updated,
-- retreat movement uses a looser pathfinder than normal supply movement, but it still cannot retreat through hostile-controlled routes.
+Fleets cannot enter a sea cell that contains a hostile base with coast batteries,
 
-For fleet groups, strategic speed is determined by the slowest deployed ship in the group, using a cruising speed rather than full tactical speed. A fleet with no supply left can still move, but only very slowly. If the game judges that the fleet no longer has enough endurance to return to its base, the current mission is interrupted and the fleet is ordered to return automatically.
+### Cell Control and Movement
 
-Naval pathfinding also has operational restrictions:
-
-- fleets cannot enter a sea cell that contains a hostile fortified base,
-- reorganizing groups do not move until the reorganization state ends.
+- Control of a cell is divided between the cell itself and its six edges.
+- When only one side’s units are present in a cell, that side controls the cell and all six of its edges.
+- When a unit from one side moves into a cell already controlled by the other side, the edge of that cell pointing toward the source cell is taken over by the moving side.
+- If an edge of a cell is not controlled by your side, you cannot move across that edge into the adjacent cell (therefore, a unit that moves in can “cover” the cell it just left).
 
 ## Supply
 
-WIP
+### Supply Cap and Supply Consumption
+
+- The supply cap and consumption of land units are determined by their strength and type.
+- The supply cap and consumption of ships are determined by their type and tonnage.
+- A depot’s supply cap equals 30 days of supply for all land units it currently supports, plus all ships that have it set as their home port, plus the supply caps of downstream depots.
+- During turn resolution, a depot will always attempt to refill its supply to the cap through the land network.
+
+<img src="images/land supply network.jpg">
+
+### Sea Transport Supply
+
+- If a coastal depot cannot connect to the land supply network, its supply will fall below the cap, creating a deficit.
+- If the depot belongs to the AI, or if the player has enabled supply automation, transport ships will be drawn from the idle transport pool to initiate supply sub-mission for it.
+
+<img src="images/supply sub mission.jpg">
 
 ## Naval Transfer
 
-Navy Transfer must be carried out through a naval mission. The Non-Fleet Strategic Groups to be transported via Navy Transfer and the Fleet Group providing the transportation need to be assigned to the mission. During the assembly phase, they will arrive at the assembly point (the first hex of the waypoint). The groups to be transported are generally divided into several parts and loaded onto individual; transport ships, with large formation gradually being emptied until they become small enough to be entirely loaded onto a single transport ship. Upon reaching the destination, the groups will, by default, automatically reorganize into their original formation. The navy transfer may require multiple rounds trips. Once the mission is completed, the transport fleet will remain stationed at the assembly point (it's a good start point for a persistent supply mission).
+If **Army Path Finding Mode** is set to _Enable Naval Transport_, right-click pathfinding will consider not only normal land movement but also routes that travel by sea to reach the destination. This is referred to as “mixed pathfinding.”
+
+Regardless of the actual locations and positions of available transport ship assets, mixed pathfinding uses the following assumptions:
+
+- Units can embark at a port with a depot, taking 3 days (the actual time depends on the location of transport ship assets; in the current implementation, embarking itself takes no time).
+- Units move at sea at a speed of 6 knots (the actual speed depends on the transport ships themselves).
+- Units disembark at the landing point, taking 1 day (in the current implementation, disembarking itself takes no time).
+
+In the path, naval segments are marked with a light blue circle indicating the embarkation point and a light red circle indicating the disembarkation point:
+
+<img src="images/navy transfer segment.jpg">
+
+
+When a strategic group is attempting to embark, the AI will assign transport ships from the same home port to a **Navy Transport** sub-task, split-load the units, and set the formation to **Transfer** toward the disembarkation point. Transport ships assigned to the **Transfer** sub-task will unload their carried units upon arrival and then return.
+
+If a unit initiates embarkation at a port without idle transport ships, the process can still proceed, as it will “attract” transport ships. Idle transport ships are allocated proportionally based on “demand”:
+
+- If a tile contains both a Coast Depot and an HQ (initially Tianjin, Weihaiwei, and Hiroshima; later also including Japanese forward bases), demand +1
+- If a tile has units requesting embarkation, demand +1
+
+### Transfer Auto-Split Procedure
+
+The groups to be transported are generally divided into several parts and loaded onto individual; transport ships, with large formation gradually being emptied until they become small enough to be entirely loaded onto a single transport ship. Upon reaching the destination, the groups will, by default, automatically reorganize into their original formation. The navy transfer may require multiple rounds trips.
 
 <img src="images/naval transfer mission allocation.svg">
-<img src="images/naval transfer mission example.svg">
 
 ## Repair
 
@@ -404,16 +434,15 @@ Different damage types have different repair point costs and priorities, and are
 
 ### Repair Device
 
-Damage can be repaired by ports and repair shipyards.
+Damage can be repaired by ports, repair shipyards or repair ships.
 
 <img src="images/Port_Repair_Shipyard.png">
 
-| Type | Repair Point Generated | Repair Upper Limit (tons) |
-| ---- | ---------------------- | ------------------------- |
-| Port (per level) | 100 | 0 |
-| Repair Shipyard (per level) | 100 | 1000 |
-
-Repair ships have been added to the game, but their repair functionality will be implemented in a future update.
+| Type                        | Repair Point Generated | Repair Upper Limit (tons) |
+| --------------------------- | ---------------------- | ------------------------- |
+| Port (per level)            | 100                    | 0                         |
+| Repair Shipyard (per level) | 100                    | 1000                      |
+| Repair Ship x1              | 100                    | 0                         |
 
 ### Mapped Damage Point
 
@@ -497,7 +526,7 @@ The base development language is English, which remains the most polished versio
 Current localization approach:
 
 - **Basic UI**: English and Simplified Chinese versions are manually crafted. Japanese and Traditional Chinese are LLM-translated based on the above two languages.
-- **Remarks**: Source content with its orignal language appears at the top; translation follow below.
+- **Remarks**: Source content with its original language appears at the top; translation follow below.
 - **Long Texts** (Help, tutorials, Steam page, etc.): English version are manually written; other languages are LLM-translated from English.
 - **Dynamic Content** (Damage effects, combat logs, etc.): Similar to Basic UI.
 
@@ -509,39 +538,25 @@ DP primarily drives the generation of General Damage Effects, which can severely
 
 Mechanically, 100% DP marks the point at which General Damage Effect checks cease. Beyond this threshold, no further General DE rolls are made, meaning that additional damage is relatively less likely to cause the ship to sink via general damage (you can think of this as the chance of catastrophic explosions, such as magazine detonations, having already been exhausted, so further shell holes above the waterline no longer increase the likelihood of sinking). That said, specific damage effects resulting from normal hits can still sink the ship.
 
-## How to Enable Movement AI
+## What is DE XXX (like DE 101?)
 
-Select a group in the OOB Editor, turn off "Inherited" in the automatic movement field, and set it to "Automatic." The group will then change its course according to certain principles. This setting is usually applied to a top-level group, such as "Japan Fleet" or "China Fleet," but it can also be set at a subordinate level for partial automation.
-
-The AI is still in a development state, so it is not enabled by default. The game currently recommends sandbox-style gameplay, where the player controls both sides simultaneously and observes the outcome—similar to how solitary wargamer does play their miniatures, but with help of auto-resolution powered by computer.
+DE XXX is "Damage Effect XXX" listed in SK5, though I can't list them since they're behind a paywall, you can check source code to determine their effect in this game. They're not always equivalent though.
 
 ## Editing is Not Intuitive
 
 I haven’t written related material since major rework is expected. If you really want to edit something and find it frustrating, contact me (via GitHub issue or Discord server) to let me know someone is really interested, I would write a temp document to explain how to do it in the current stage.
 
-## Why are so many standard UI elements named "Editor"? I don't want to "edit" anything—I just want to play.
-
-I aim to recreate a sandbox experience similar to Vassal and Tabletop Simulator (TTS), where editing allows players to introduce custom rules and house rules without coding. On the other hand, in games like CMO, players often use edit mode to streamline experimentation—a feature I want to incorporate into game.
-
 ## Why is so much image loading done at runtime?
 
 I want to emulate Tabletop Simulator's approach of loading images dynamically during gameplay, which has both advantages and disadvantages.
 
-## Why Is the Game So Large? Shouldn't It Be a Mini Game liek RTW Given the "Minimalist" Graphics?
+## Why Is the Game Size So Large? Shouldn't It Be a Mini Game liek RTW Given the "Minimalist" Graphics?
 
 Similar to games like CMO, the majority of the installation size comes from GIS elevation data. While titles such as Rule the Wave avoid this overhead by using vector data, this project uses raster data — even though ocean depth data has been clamped.
 
 The reason for retaining elevation data is to support a planned tactical land combat generator, which will utilize terrain elevation in future updates. Also elevation data will render location more recognizable and map pretty.
 
-## Is the Strategic Game Playable Now?
-
-No, only the naval tactical game is currently partial playable. The exposed strategic game mode only gives a *feel* for what the full strategic experience will eventually be like. 
-
-This area may also be of interest to open-source contributors, as the strategic game is now the main focus of development.
-
-## What is DE XXX (like DE 101?)
-
-DE XXX is "Damage Effect XXX" listed in SK5, though I can't list them since they're behind a paywall, you can check source code to determine their effect in this game. They're not always equivalent.
+Edit: A pre-calculated distance & gradient field data is added as well to enhance tactical obstacle avoidance.
 
 # Help
 
@@ -553,7 +568,7 @@ DE XXX is "Damage Effect XXX" listed in SK5, though I can't list them since they
 	- Change direction: Select a group lead, then hold Shift and left-click a point on the map to set the direction.
     - Change speed: Change value in the slider of right panel
     - Change or inspect a lot of details in editors.
-- Use F or R to set Follow and relative to relationship, more parameter can be specified in the ShipLog editor.
+- Use F or R to set Follow and relative to relationship, more parameter can be specified in the Ship State View.
 
 ## Automation
 
@@ -561,23 +576,24 @@ DE XXX is "Damage Effect XXX" listed in SK5, though I can't list them since they
 - If a unit follow or is relative to a target, it will adjust its speed and course to reach the desired position.
 - By default, an independent unit (usually the group leader) maintains its current speed and course. However, if automatic movement is enabled in the doctrine, the unit will adjust its course to maximize firepower while minimizing incoming damage.
 
-## Shortcuts
+## Tactical Naval System Shortcuts
 
 Basic:
 
 - Left Click: Select Unit
 - Right Click: Select Unit and open Ship State Editor for it.
 - Shift + Left Click: Set course for the selected unit
-- D: Distance measureing line
+- D: Distance measuring line
 - S: Line of Sight (check ship masking & Earth curvature)
 - I: Detach unit (set control mode to Independent)
 - F: Set follow target (extra parameter requires Ship State editor)
 - R: Set relative to target (extra parameter requires Ship State editor)
 - L: Open Ship State Editor for the selected ship
+- A: Set Manual Fire constraint
 - Esc: Reset UI to idle state.
 
 Edit:
 
-- Insert: Insert a ShipLog on map. (Deploy a "non-deployed" ship to map).
+- Insert: Insert a Ship on map. (Deploy a "non-deployed" ship to map).
 - Delete: Delete selected ship.
 - M: Move selected ship to another point.
