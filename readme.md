@@ -160,17 +160,146 @@ Note: Flying shell is not modeled in the game. The flying time is part of "proce
 
 ### Hit Resolution
 
-When a hit is scored, following procedure is performed:
+When a shell is ready to fire, one round of ammunition is spent and the final hit probability described above is rolled. If the roll misses, only a firing log is recorded. If the roll hits, the game resolves the hit by target damage schema: **Warship**, **Merchant Vessel**, or **Land Battery**.
 
-- Roll for Hit Location & Vertical/Horizontal hit according Range Band (Short/Medium/Long/Extreme) and target aspect (Narrow/Broad).
-- Compare Vertical/Horizontal penetration value (for given range) to effective armor value of the hit location. Three outcomes are possible:
-	- Pass-Through: Less Effective
-	- Penetrates And Detonates: Most Effective
-	- Not Penetrate: Least Effective
-- According to penetrate type, and use Ammo Type (AP/SAP/COM/HE), roll for Damage Effect and Damage Point inflicted.
-- An increase in Damage Point may generate additional Damage Effects, or instant sink the ship if it become too high for a turn (but 100% DP doesn't automatically sink the ship). Damage Effect themselves may also generate further Damage Effects.
+For a **Warship**, the game first rolls a hit location. The column is determined by range band; **Long** and **Extreme** use the same location column.
 
-Note: "DE XXX" is the Damage Effect name used by SK5, the effect can be checked in source code or SK5 material (not always identical though).
+Broad target aspect:
+
+| Hit Location | Short | Medium | Long/Extreme |
+| --- | ---: | ---: | ---: |
+| Deck, horizontal | 2 | 12 | 25 |
+| Turret, horizontal | 1 | 3 | 6 |
+| Superstructure, horizontal | 2 | 4 | 8 |
+| Conning Tower, vertical | 4 | 3 | 3 |
+| Main Belt, vertical | 26 | 18 | 16 |
+| Belt Ends, vertical | 9 | 8 | 7 |
+| Barbette, vertical | 19 | 17 | 11 |
+| Turret, vertical | 17 | 16 | 11 |
+| Superstructure, vertical | 19 | 17 | 12 |
+| Ineffective | 1 | 1 | 1 |
+
+Narrow target aspect:
+
+| Hit Location               | Short | Medium | Long/Extreme |
+| -------------------------- | ----: | -----: | -----------: |
+| Deck, horizontal           |     4 |     20 |           34 |
+| Turret, horizontal         |     2 |      3 |            7 |
+| Superstructure, horizontal |     3 |      9 |           14 |
+| Conning Tower, vertical    |     6 |      4 |            3 |
+| Main Belt, vertical        |     7 |      5 |            5 |
+| Belt Ends, vertical        |     4 |      3 |            3 |
+| Barbette, vertical         |    28 |     16 |            6 |
+| Turret, vertical           |    23 |     19 |           13 |
+| Superstructure, vertical   |    22 |     20 |           14 |
+| Ineffective                |     1 |      1 |            1 |
+
+These numbers are weights of sampling. If **Ineffective** is rolled, the shell scores a hit but produces no armor penetration or damage result.
+
+For a **Land Battery**, the hit location table is simpler:
+
+| Range Band | Horizontal | Vertical | Ineffective |
+| --- | ---: | ---: | ---: |
+| Short | 5 | 94 | 1 |
+| Medium | 10 | 89 | 1 |
+| Long/Extreme | 20 | 79 | 1 |
+
+For a **Merchant Vessel**, armor location is not used. The game rolls:
+
+| Merchant Hit Location | Weight |
+| --- | ---: |
+| Superstructure | 8 |
+| Propulsion | 12 |
+| Cargo Area 1 | 20 |
+| Cargo Area 2 | 20 |
+| Cargo Area 3 | 20 |
+| Cargo Area 4 | 20 |
+
+After the hit location is known, the game selects either the vertical or horizontal penetration value from the firing battery's penetration table. Warships and land batteries use the armor location to choose the penetration type:
+
+| Location | Penetration Type Used |
+| --- | --- |
+| Deck | Horizontal |
+| Turret, horizontal | Horizontal |
+| Superstructure, horizontal | Horizontal |
+| Conning Tower | Vertical |
+| Main Belt | Vertical |
+| Belt Ends | Vertical |
+| Barbette | Vertical |
+| Turret, vertical | Vertical |
+| Superstructure, vertical | Vertical |
+
+The penetration value is then adjusted for the ammunition actually fired:
+
+| Base Penetration Type | Fired Ammunition | Effective Penetration |
+| --- | --- | --- |
+| Same as fired ammunition | Same type | 100% of table value |
+| AP table | SAP | 75% of table value |
+| AP table | Common | 50% of table value |
+| SAP table | Common | 66% of table value |
+| Any table | HE | Uses the special HE penetration lookup by shell bore and AP-equivalent penetration |
+| Other combinations | Any | 100% of table value |
+
+The target's effective armor is read from the hit location. An armor value of `0.5 inch` or less is treated as **unarmored** for shell detonation purposes.
+
+The game then resolves the hit into one of three penetration/detonation classes:
+
+| Condition                                                            | Result                                                                          |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Armored target, penetration at least armor but less than twice armor | Class A, Penetrates and Detonates                                               |
+| Unarmored target, or penetration at least twice armor                | Roll for detonation; success gives Class A, failure gives Class B, Pass-Through |
+| Armored target, effective penetration less than effective armor      | Class C, No Penetration                                                         |
+
+The detonation roll uses the fired ammunition:
+
+| Ammunition | Armored Detonation Chance | Unarmored Detonation Chance |
+| --- | ---: | ---: |
+| AP | 30% | 20% |
+| SAP | 50% | 40% |
+| Common | 70% | 70% |
+| HE | 90% | 90% |
+
+Merchant vessels are resolved as unarmored targets with nominal penetration `1` and armor `0`.
+
+Damage Points and Damage Effect probability come from the firing battery's **Damage Rating** row in the Shell Damage Factors table. The game uses the highest table row whose Damage Factor is less than or equal to the battery's Damage Rating.
+
+Given penetration type (class A/B/C) hit and ammunition type (AP/SAP/Common/HE), damage rating, a damage point is rolled and inflicted and a damage effect is rolled. In general:
+
+- Class A > Class B > Class C
+- (If class A) HE > Common > SAP > AP
+- Higher damage rating => higher damage point & higher probability to add a damage effect
+
+Detail can be seen in [source](https://github.com/yiyuezhuo/Late-Qing-Naval-Combat-Demo/blob/20167d97b11e08761cd2355c79570feb69433288/Assets/Scripts/NavalCombatCore/RuleChart.cs#L428)
+
+Damage Points are accumulated as pending damage during the turn and then applied during damage resolution. When a ship crosses damage tiers, the game may generate extra general Damage Effects and may trigger morale or catastrophic sinking checks.
+
+| Damage Tier | Damage Percent Threshold | Chance to Generate General DE When Crossed |
+| ----------- | -----------------------: | -----------------------------------------: |
+| 0           |                       0% |                                         0% |
+| 1           |                      10% |                                        70% |
+| 2           |                      20% |                                        80% |
+| 3           |                      30% |                                        75% |
+| 4           |                      40% |                                        85% |
+| 5           |                      50% |                                        80% |
+| 6           |                      59% |                                        90% |
+| 7           |                      68% |                                        85% |
+| 8           |                      77% |                                        95% |
+| 9           |                      86% |                                        90% |
+| 10          |                      95% |                                       100% |
+| 10          |                     101% |                                       100% |
+
+Morale checks are made when crossing tiers 7-10:
+
+| Crossed Tier | Crew Rating -1 | Crew Rating 0 or +1 | Crew Rating +2 | Crew Rating +3 |
+| ------------ | -------------: | ------------------: | -------------: | -------------: |
+| 7            |            12% |                  8% |             4% |             4% |
+| 8            |            24% |                 16% |            10% |             4% |
+| 9            |            36% |                 24% |            15% |             8% |
+| 10           |            48% |                 32% |            20% |            15% |
+
+If a ship crosses **8 or more damage-tier rows in a single turn**, it is destroyed by catastrophic damage. Separately, if flooded machinery spaces reach the current survival threshold, the ship is also destroyed by flooding. Reaching 100% Damage Points by itself does not automatically sink a ship unless one of these checks or a Damage Effect produces that result.
+
+Note: "DE XXX" is the Damage Effect name used by SK5. The in-game effect behavior is implemented in code and may not be identical to SK5 in every case.
 ## Torpedo
 
 Torpedoes do not follow the SK5 rule, because the compromises made for tabletop play would result in a poorer system while not being any easier to implement compared to a system based on actual collision detection handled by the game engine’s physics.
