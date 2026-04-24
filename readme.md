@@ -44,16 +44,117 @@ The above image also show how the base fire control value is derived:
 - The **Range Band** (determined by distance in the penetration table) and the **Target Aspect** determine the column.
 - The **Target Speed** determines the row.
 
-This fire control value is then adjusted by multiple factors:
+This fire control value is then adjusted in the following order. Unless noted otherwise, these are additive modifiers to the fire control score.
 
-- Visibility
-- Evasive Action
-- Fire Control System
-- Over-centration
-- Target Size
-- Fire Control Radar (Although the game era doesn't cover radar (SK5 covered it), this value can be used to denote range-finder or other useful damageable device.)
+- **Close Range Override:** at 4,500 yards or less, and only if the shot is in the **Short** range band, the game compares the normal table value with the close-range table below and uses the higher of the two.
 
-The detailed rule can be checked in source code.
+| Target Speed (knots) | 0-2,000 yd Broad | 0-2,000 yd Narrow | 2,001-4,500 yd Broad | 2,001-4,500 yd Narrow |
+| -------------------- | ---------------: | ----------------: | -------------------: | --------------------: |
+| 0-9                  |               15 |                12 |                   12 |                    10 |
+| 10-18                |               13 |                 9 |                   10 |                     8 |
+| 19-27                |               11 |                 8 |                    9 |                     7 |
+| 28-36                |                9 |                 7 |                    8 |                     6 |
+| 37+                  |                8 |                 6 |                    7 |                     5 |
+
+- **Mount and Battery Condition:** damage and sub-states are applied before the environmental and tactical modifiers. The actual calculation is:
+
+`Adjusted FC = max((Base FC + total flat offsets + worst directional offset) × lowest coefficient, 0)`
+
+Flat offsets from applicable sub-states are summed. If several coefficient penalties are present, the lowest coefficient is used. Directional penalties are taken from the worst applicable directional modifier. In the current implementation, the existing sector fire/smoke directional interference effect is usually a `-1` penalty when that damaged/smoke-filled section interferes with the mount and firing direction.
+
+- **Visibility:** the current scenario visibility always applies.
+
+| Visibility State                                 | Modifier |
+| ------------------------------------------------ | -------: |
+| `VeryClear1`, `VeryClear2`, `ExceptionallyClear` |       +1 |
+| `LightHaze`, `Clear`                             |       +0 |
+| `ThinFog`, `Haze`                                |       -2 |
+| `LightFog`, `DenseFog`                           |       -4 |
+
+- **Twilight, Night, and Illumination:**
+  - At **twilight**, if the target lies within `30°` of the sun bearing from the observer, the target is treated as silhouetted and receives `+1`.
+  - At **twilight**, if the target lies within `30°` of the opposite bearing, the target is treated as lost in darkness and receives `-2`.
+  - Otherwise, twilight gives `+0`.
+  - At **night**, if no positive illumination bonus applies, the moonlight modifier is `-2` with moonlight and `-4` without moonlight.
+  - A target that is **afire** or **illuminated by searchlight** receives `+2`.
+  - A target merely **using searchlight** receives `+1`.
+  - If a positive illumination bonus applies, the twilight and moonlight modifiers are skipped.
+
+- **Evasive Action:**
+
+| Condition | Modifier |
+| --- | ---: |
+| Target only is evasive | -3 |
+| Firing ship only is evasive | -2 |
+| Both ships are evasive | -8 |
+| Neither ship is evasive | +0 |
+
+- **Fire Control System State:**
+  - If **no operational FCS** is tracking the target, the battery fires under **Local Control** and the fire control score is multiplied by `0.5`.
+  - Otherwise, if at least one tracking FCS is in **Hitting**, the modifier is `+2`.
+  - Otherwise, if at least one tracking FCS is only in **Begin Tracking**, the modifier is `-2`.
+  - Otherwise, the battery is in ordinary **Tracking** and receives `+0`.
+
+- **Under Fire and Over-Concentration:**
+  - If the firing ship has been fired upon by **3 or more ships** during the current turn, it receives `-2`.
+  - Over-concentration is `0` for the first battery firing at a target, `-1` for the second, `-2` for the third, and so on.
+  - In formula form: `-(number of batteries already firing at the target - 1)`, but never above `0`.
+
+- **Target Size:** the target ship's **Target Size modifier** is added directly. If a ship class uses the default displacement-derived value, the bands are:
+
+| Displacement | Target Size Modifier |
+| --- | ---: |
+| 0-671.5 tons | -1 |
+| 671.6-3,110 tons | 0 |
+| 3,110.1-16,660 tons | +1 |
+| Above 16,660 tons | +2 |
+
+- **Battle Factors:**
+  - **Sea State:** Beaufort `0-3` gives `0`. Beaufort `4+` uses the following reduction table by firing ship displacement. A result of `-100` means fire is effectively blocked.
+
+| Ship Displacement (tons) | Bft 4 | Bft 5 | Bft 6 | Bft 7 | Bft 8 | Bft 9 | Bft 10 |
+| ------------------------ | ----: | ----: | ----: | ----: | ----: | ----: | -----: |
+| 0-100                    |    -2 |    -4 |    -6 |  -100 |  -100 |  -100 |   -100 |
+| 101-200                  |    -1 |    -3 |    -4 |    -5 |    -7 |  -100 |   -100 |
+| 201-300                  |    -1 |    -2 |    -3 |    -5 |    -6 |  -100 |   -100 |
+| 301-400                  |     0 |    -2 |    -3 |    -4 |    -5 |    -9 |   -100 |
+| 401-500                  |     0 |    -2 |    -3 |    -4 |    -5 |    -7 |   -100 |
+| 501-600                  |     0 |    -1 |    -2 |    -3 |    -4 |    -6 |   -100 |
+| 601-700                  |     0 |    -1 |    -2 |    -3 |    -4 |    -5 |   -100 |
+| 701-800                  |     0 |    -1 |    -2 |    -3 |    -3 |    -5 |   -100 |
+| 801-1,000                |     0 |    -1 |    -2 |    -2 |    -3 |    -5 |   -100 |
+| 1,001-1,200              |     0 |    -1 |    -2 |    -2 |    -3 |    -4 |     -9 |
+| 1,201-1,500              |     0 |    -1 |    -1 |    -2 |    -2 |    -4 |     -8 |
+| 1,501-1,900              |     0 |    -1 |    -1 |    -2 |    -2 |    -3 |     -7 |
+| 1,901-2,500              |     0 |     0 |    -1 |    -2 |    -2 |    -3 |     -7 |
+| 2,501-3,500              |     0 |     0 |    -1 |    -1 |    -2 |    -2 |     -6 |
+| 3,501-5,000+             |     0 |     0 |    -1 |    -1 |    -2 |    -2 |     -6 |
+
+  - **Crew Quality:** the firing ship's current Crew Quality value is added directly.
+  - **Leader Naval Tactical:** if the leader-rule variant is enabled, the commander's Naval Tactical rating adds:
+
+| Naval Tactical Rating |             Modifier |
+| --------------------- | -------------------: |
+| Gifted                |                 +0.3 |
+| Outstanding           |                 +0.2 |
+| AboveAverage          |                 +0.1 |
+| Average               |                    0 |
+| BarelyCompetent       |                 -0.1 |
+| Unknown               | treated as `Average` |
+
+- **Fire Control Radar:** if the battery has operational fire control radar, the battery's own **Fire Control Radar Modifier** is added directly.
+
+The final fire control score is then converted into hit probability. For this step, the score is capped to the range `0-30`.
+
+| Final Fire Control Score | Hit Probability           |
+| ------------------------ | ------------------------- |
+| 0-3                      | `0.25% + 0.25% × score`   |
+| Above 3 up to 19         | `1% + 0.5% × (score - 3)` |
+| Above 19 up to 30        | `9% + 1% × (score - 19)`  |
+
+After that, the game's **Global Hit Coefficient** is applied to the result. In the default setting, this coefficient is `1.0`.
+
+At present, blind fire, smoke-obscuration penalties, spotter aircraft bonuses, and barrage-specific extra concentration penalties are not yet applied in this calculation.
 
 Note: Flying shell is not modeled in the game. The flying time is part of "processing time" in the game. 
 
