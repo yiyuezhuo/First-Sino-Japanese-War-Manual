@@ -521,6 +521,19 @@ Click the "+" button to create a "targeting record", select port or starboard, t
 
 <img src="images/mount-level-manual-targeting-rapid-firing.jpg">
 
+## Custom Ship Class
+
+After enabling **Edit Mode**, the Ship Class Editor can be used to edit existing ships or create new ones. A Ship Class contains two categories of data:
+
+- **Physically meaningful real-world data**: displacement, armor, speed, rate of fire, penetration tables, etc.
+- **Abstract system parameters in the SK5 system**: hit points, damage control value, target size, fire control value, Battery Data Rating, etc.
+
+The SK5 rulebook itself does not explain how some of these abstract system parameters are calculated. However, discussions on forums have mentioned possible calculation methods, or certain relationships are self-evident (for example, the fire control value of _Narrow_ is 60% of the corresponding _Broad_ value). To make it easier for players to create custom ships without needing to fully understand the rulebook or gather scattered information, most of these abstract system parameters in the game can be assigned default values derived from physically meaningful real-world data (players can later override these defaults). Some of these are based on fixed rules, while others come from fitted approximations (which are more applicable to pre-dreadnought ships). Some of the rules are as follows:
+
+(Here, supplement the calculation methods for several values directly affected by displacement (list formulas if they are straightforward), the calculation method for Armor (including armor and coefficient tables), the behavior of Dynamic Infer Other, the Reset behavior of Battery on fire control and penetration tables, how Damage Rating is determined, and the optional metadata for Rapid Firing Battery affecting Damage and the mechanism for inferring Damage.)
+
+For **Battery**, **Rapid Firing Battery**, and **Torpedo**, even with reasonable default values, manually filling out those tables can still be cumbersome. In such cases, you can directly use the buttons at the top to copy the Battery, Rapid Firing Battery, or Torpedo setup from another ship and apply it to the current one. For example, you could combine the main battery from Ship A, the secondary battery from Ship B, the rapid-firing batteries 1 and 2 from Ship C, and the torpedoes from Ship D.
+
 ## Multiplayer
 
 The Naval Tactical Mode's WEGO mode can be played in multiplayer. The auto-playing multiplayer mode is not supported yet.
