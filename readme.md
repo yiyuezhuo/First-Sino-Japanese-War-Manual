@@ -523,14 +523,158 @@ Click the "+" button to create a "targeting record", select port or starboard, t
 
 ## Custom Ship Class
 
+### Default value
+
 After enabling **Edit Mode**, the Ship Class Editor can be used to edit existing ships or create new ones. A Ship Class contains two categories of data:
 
 - **Physically meaningful real-world data**: displacement, armor, speed, rate of fire, penetration tables, etc.
 - **Abstract system parameters in the SK5 system**: hit points, damage control value, target size, fire control value, Battery Data Rating, etc.
 
-The SK5 rulebook itself does not explain how some of these abstract system parameters are calculated. However, discussions on forums have mentioned possible calculation methods, or certain relationships are self-evident (for example, the fire control value of _Narrow_ is 60% of the corresponding _Broad_ value). To make it easier for players to create custom ships without needing to fully understand the rulebook or gather scattered information, most of these abstract system parameters in the game can be assigned default values derived from physically meaningful real-world data (players can later override these defaults). Some of these are based on fixed rules, while others come from fitted approximations (which are more applicable to pre-dreadnought ships). Some of the rules are as follows:
+The SK5 rulebook itself does not explain all of these abstract system parameters are calculated. However, discussions on forums have mentioned possible calculation methods, or certain relationships are self-evident (for example, the fire control value of _Narrow_ is 60% of the corresponding _Broad_ value). To make it easier for players to create custom ships without needing to fully understand the rulebook or gather scattered information, most of these abstract system parameters in the game can be assigned default values derived from physically meaningful real-world data (players can later override these defaults). Some of these are based on fixed rules, while others come from fitted approximations (which are more applicable to pre-dreadnought ships). Some of the rules are as follows:
 
-(Here, supplement the calculation methods for several values directly affected by displacement (list formulas if they are straightforward), the calculation method for Armor (including armor and coefficient tables), the behavior of Dynamic Infer Other, the Reset behavior of Battery on fire control and penetration tables, how Damage Rating is determined, and the optional metadata for Rapid Firing Battery affecting Damage and the mechanism for inferring Damage.)
+When **Displacement** is edited through the Ship Class Editor, the editor immediately refreshes the following default values. These values are only defaults; they can still be edited manually afterward.
+
+- **Damage Point**: `round(100 * sqrt(max(0, displacement tons) * 0.033))`.
+- **Target Size Modifier**:
+
+| Displacement (tons) | Target Size Modifier |
+| ---: | ---: |
+| `<= 671.5` | `-1` |
+| `<= 3110` | `0` |
+| `<= 16660` | `1` |
+| `> 16660` | `2` |
+
+- **Damage Control Rating**:
+
+| Displacement (tons) | Damage Control Rating |
+| ---: | ---: |
+| `<= 111` | `0` |
+| `<= 1092` | `1` |
+| `<= 2975` | `2` |
+| `<= 3040` | `1` |
+| `<= 6202.5` | `3` |
+| `<= 9978` | `4` |
+| `<= 14262.5` | `5` |
+| `> 14262.5` | `6` |
+
+- **Length, Beam, Draft, and Complement** are fitted estimates from displacement and ship type. The shared form is `exp(intercept + coefficient * ln(max(1, displacement tons)) + type offset)`. Length and beam are rounded to the nearest foot, draft is rounded to one decimal foot, and complement is rounded to the nearest integer with a minimum of `1`.
+
+| Field | Intercept | Coefficient |
+| --- | ---: | ---: |
+| Length | `2.5669774` | `0.3904741` |
+| Beam | `1.1975496` | `0.3171914` |
+| Draft | `0.4707447` | `0.2975393` |
+| Complement | `0.1084306` | `0.6979308` |
+
+| Ship Type | Length Offset | Beam Offset | Draft Offset | Complement Offset |
+| --- | ---: | ---: | ---: | ---: |
+| Battleship | `-0.2935404` | `0.0903524` | `-0.0231818` | `-0.2131911` |
+| Armored Cruiser | `-0.1377085` | `0.0465869` | `0.0322265` | `0.0607233` |
+| Torpedo Boat | `0.5236686` | `0.0391832` | `-0.4071087` | `-0.2046980` |
+| Destroyer | `0.5377667` | `-0.0055650` | `-0.1104536` | `-0.0844927` |
+| Patrol Gunboat | `0.0132753` | `0.0545587` | `-0.1003142` | `-0.1349758` |
+| Transport | `0.0905690` | `0.0005691` | `0.5143422` | `-0.6856862` |
+| Armed Merchant Cruiser | `0.1020602` | `0.0099036` | `0.5230984` | `-0.6651469` |
+| Repair | `0.2181666` | `-0.1220814` | `-0.4029193` | `-0.4685847` |
+| Battlecruiser | `-0.0521659` | `0.0744055` | `-0.1574514` | `-0.3309420` |
+| Other types | `0` | `0` | `0` | `0` |
+
+Changing **Ship Type** also recalculates length, beam, draft, and complement from the current displacement.
+
+**Armor** is stored as actual inches and effective inches for each armor location. When an Armor Type is selected, the editor sets the armor coefficient from the table below and recalculates every effective armor value as `round(actual inches * coefficient, 1)`. If the coefficient is edited directly, the editor tries to infer the Armor Type only when exactly one armor type has that coefficient; otherwise the type becomes `NotSpecified` (Not defined or mixed).
+
+| Armor Type | Coefficient |
+| --- | ---: |
+| No Armor | `0` |
+| Wrought Iron | `0.6` |
+| Mild Steel | `0.75` |
+| Compound Hard Steel Faced Wrought Iron | `0.68` |
+| Nickel Steel | `0.9` |
+| Harvey Mild Steel | `0.74` |
+| Harvey Nickel Steel | `0.78` |
+| Krupp Chrome Nickel Steel | `0.95` |
+| Krupp Cemented 1894 | `0.83` |
+| High Tensile Steel | `0.82` |
+| Class A Armor 1900 | `0.83` |
+| Krupp Nickel Steel | `0.83` |
+| Krupp Non-Cemented | `0.95` |
+| Krupp Cemented WW1 Era 1905 | `0.83` |
+| Witkowitzer KC | `0.95` |
+| Class A Armor Midvale Non-Cemented | `0.88` |
+| Class B Armor 1910 | `0.95` |
+| Special Treatment Steel | `1` |
+| Class A Armor 1911 | `0.89` |
+| Krupp Cemented WW1 Era 1911 | `0.85` |
+| Krupp Wolan Hard Nickel Steel | `1` |
+| D Silicon Manganese HT Steel | `0.9` |
+| New Vickers Non-Cemented | `0.95` |
+| Non-Cemented Armor | `1` |
+| Krupp Cemented 1928 | `1` |
+| PO Homogenous Plate | `1` |
+| Italian WW2 Era Krupp Cemented | `1` |
+| British Cemented Armor | `1` |
+| Class B Armor 1933 | `1` |
+| Class A Armor 1933 | `1` |
+| Vickers Non-Cemented | `0.84` |
+| Molybdenum Non-Cemented | `0.97` |
+
+For **Battery** records, editing Shell Size or Shell Weight through the editor updates **Damage Rating** as `floor(0.4 + 1.30 * shell size in inches + 0.82 * sqrt(shell weight in pounds) + 0.5)`. The value remains manually editable afterward.
+
+The **Reset Fire Control Table** button rebuilds values from the fitted fire-control model. If the table is empty, rows are first created for target speeds `9`, `18`, `27`, `36`, and `45` knots. The model computes a latent value for 9 knots/short/broad, then each cell is `floor(latent * speed factor * range factor * aspect factor + 0.5)`.
+
+| Speed Threshold | Factor |
+| ---: | ---: |
+| `9` | `1` |
+| `18` | `0.6710` |
+| `27` | `0.5265` |
+| `36` | `0.4393` |
+| `45` | `0.3758` |
+
+| Range Band | Factor |
+| --- | ---: |
+| Short | `1` |
+| Medium | `0.6010` |
+| Long | `0.4165` |
+| Extreme | `0.3567` |
+
+| Aspect | Factor |
+| --- | ---: |
+| Broad | `1` |
+| Narrow | `0.6005` |
+
+If the fire-control system has a code, the latent value is `4.5261 + code offset + 0.2334 * shell size - 0.0823 * displacement tons / 1000`.
+
+| FCS Code | Offset |
+| --- | ---: |
+| Z | `0` |
+| Y | `2.1829` |
+| X | `4.2304` |
+| W | `4.1718` |
+| U | `2.4735` |
+| T | `4.0784` |
+| S | `5.2111` |
+| R | `6.0497` |
+| Q | `7.4472` |
+
+If no code coefficient is available, the component model is used instead: `4.7316 + 0.2128 * shell size - 0.0893 * displacement tons / 1000`, plus `1.8941` for Telescope gun sight, `2.1650` for Basic fire-control instrument, `1.5337` for Optical rangefinder, and `1.9988` for Follow-the-Pointer director control.
+
+Fire Control Code and Component only serve to set the default values of the Fire Control Table (and also act as a form of remark/annotation). Their values themselves do not affect resolution, because their effects are already fully captured by the Fire Control Table, which acts as a [sufficient statistic](https://en.wikipedia.org/wiki/Sufficient_statistic).
+
+The **Reset Penetration Table** button clears the penetration table and rebuilds it from the fitted penetration model. It creates rows at `2000`, `4000`, `6000`, `8000`, `10000`, `12000`, `15000`, `18000`, `21000`, `24000`, `27000`, `30000`, `33000`, and `36000` yards, stopping at the first row that covers the battery range. If range is not positive, only the `2000` yard row is created. Rate of fire is `round to 0.1(min(maxRateOfFire * 2, 120 / (9.090133 + distance yards / 371.07068)))`. The range bands (short/medium/long/extreme) is based on `distance / range`; the default cutoffs are `0.56`, `0.90`, and `1.05`, adjusted by `-0.08` and `-0.10` for the first two cutoffs when range is `<= 5900` yards, and by `+0.08` for all three cutoffs when shell size is at least `12` inches.
+
+Vertical penetration is:
+
+`round to 0.1(exp(-7.19567 - 0.596694 * ln(shell size) + 0.702142 * ln(shell weight) + 0.733421 * ln(range yards) + 0.0331102 * max ROF + 0.402345 * distance kyd + 0.00675885 * distance kyd^2 + 0.0367314 * ln(shell size) * distance kyd - 0.0718001 * ln(range yards) * distance kyd))`
+
+Horizontal penetration is:
+
+`round to 0.1(exp(-13.5807 - 0.404477 * ln(shell size) + 0.492548 * ln(shell weight) + 1.01641 * ln(range yards) - 0.0211344 * max ROF + 3.84280 * distance/range - 1.27663 * (distance/range)^2))`
+
+For **Rapid Firing Battery**, the optional metadata stores shell size and shell weight. If no metadata exists, shell size defaults to `1.85` inches. The **Infer Other** button in the metadata dialog only changes Damage Factor: if shell size is positive, `damageFactor = floor(-0.7518 + 4.9134 * shell size + 0.5)`; otherwise, if shell weight is positive, `damageFactor = floor(4.1853 + 1.4080 * shell weight - 0.04657 * shell weight^2 + 0.5)`. If neither value is positive, nothing is changed.
+
+### Existing weapon selector
+
+<img src="images/battery-rapid-fire-battery-torpedo-selector.jpg">
 
 For **Battery**, **Rapid Firing Battery**, and **Torpedo**, even with reasonable default values, manually filling out those tables can still be cumbersome. In such cases, you can directly use the buttons at the top to copy the Battery, Rapid Firing Battery, or Torpedo setup from another ship and apply it to the current one. For example, you could combine the main battery from Ship A, the secondary battery from Ship B, the rapid-firing batteries 1 and 2 from Ship C, and the torpedoes from Ship D.
 
@@ -591,12 +735,14 @@ Depending on the synchronization mode, during advancement either:
 - the full state is sent only after advancement is completed.
 
 Afterward, players observe the newly advanced turn, make new decisions, and mark themselves as ready again to advance to the next turn.
+
 ### Notes
 
 - Default 1-minute turn (RTW style) may be too short for WEGO multiplayer gameplay. Miniatures wargames provide alternative approaches: Seekrieg uses 2-minutes turn, while the Admiralty Trilogy uses 3-minutes turn, although they sometimes also use 1-minute turn or 30--seconds turn. A 2-minutes or 3-minute turn can be used by having host advance the simulation using hotkey 2 or 3.
 - Chat is not implemented yet. You can use external chat app like Discord.
 - This traditional LAN networking can also be used over the internet with additional tools such as Hamachi.
 - The game was not originally designed to support multiplayer, so the synchronization method is somewhat clumsy. Technically, I use overly coarse-grained commands for synchronization instead of breaking them into many smaller command, which significantly slows the game and imposes heavy traffic burden. As a result, continues-time multiplayer (similar to JTS Naval Campaign) is not implemented yet. However I may revisit this issue after completing other higher-priority work.
+
 # Strategic Mode
 
 ## Getting Started
