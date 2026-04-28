@@ -6,6 +6,36 @@
 
 # Naval Tactical Mode
 
+## Formation Control
+
+Control is the basic way to make several ships behave like a formation. A ship may sail independently, follow another ship, or hold a relative station from another ship. Once the relationship is set, the controlled ship keeps adjusting its own course and speed toward the required station during time advance.
+
+Select the ship you want to command first. The control buttons are in the top **Command** tab, and the same low-level commands also have keyboard shortcuts.
+
+### Low-Level Control
+
+<img src="images/Low-level-formation-control.svg">
+
+- **Follow (F):** select a ship, press **F** or click **Follow**, then left-click the ship it should follow. The following ship will try to stay astern of the target at its **Follow Distance**. This is the usual tool for a simple line-ahead column. The distance can be adjusted in the Ship State View; the default is 500 yards.
+- **Relative To (R):** select a ship, press **R** or click **Relative**, then left-click the ship used as the reference. The selected ship will move to a fixed bearing and distance from that reference ship, and will match the reference ship's heading when it reaches station. In the Ship State View, **Relative To Dist** sets the distance, **Relative To Azimuth** sets the bearing, and **Absolute** decides how the bearing is read. With **Absolute** off, the bearing turns with the reference ship; with **Absolute** on, the bearing is a true map bearing. The default station is 250 yards at 135 degrees, roughly off the target's starboard quarter.
+- **Detach (I):** sets the selected ship to **Independent**. It clears the current Follow or Relative To relationship, so the ship keeps its own movement orders again.
+
+The game blocks obvious bad links, such as a control loop or a link between ships from different root formations. If a followed or referenced ship becomes invalid, the controlled ship is treated as independent for movement.
+
+### High-Level Control
+
+<img src="images/high-level-formation-control.jpg">
+
+High-level control buttons rewrite the control relationships below the currently selected anchor ship. They are basically batched low-level control, useful for changing from one tactical shape to another.
+
+- **Set Formation to Relative:** opens the **Relative Formation** dialog and converts the ships under the selected anchor into Relative To links.
+  - **Keep Current Position** records the present spacing and bearing as the new formation station. It's usually used to do **Turn together** maneuver.
+  - **Line Abreast** gives a beam formation; the dialog sets the angle to 90 degrees by default.
+  - **Line Of Bearing** gives a diagonal line; the dialog sets the angle to 135 degrees by default.
+  - **Distance** and **Angle** set the spacing and bearing. **Symmetric** alternates ships to both sides of the anchor, useful for screens. **Absolute** makes the bearing fixed to the map; leaving it off makes the formation rotate with the anchor's heading.
+- **Set Formation to Follow Chain:** opens the **Follow Chain Formation** dialog. After confirming the follow distance, the ships below the selected anchor are flattened into a single chain: anchor, first follower, next follower, and so on. Each ship follows the one immediately ahead of it. This is the quickest way to restore a column.
+- **Reverse Control Chain:** reverses a clean single control chain. Select the independent ship at the head of the chain, then click the button. The last ship becomes independent, and the former leaders become followers behind it. This is handy when a column needs to turn back along its own track. The command only works on a simple one-child-at-each-step chain; if a ship controls multiple ships, the game will ask you to simplify the chain first.
+
 ## Range Lines
 
 <img src="images/Range Lines.svg">
