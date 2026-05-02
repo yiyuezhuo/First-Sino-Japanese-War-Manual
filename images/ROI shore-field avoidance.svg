@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1100"
+   height="700"
+   viewBox="0 0 1100 700"
+   version="1.1"
+   id="svg36"
+   sodipodi:docname="ROI shore-field avoidance.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview36"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.88893424"
+     inkscape:cx="299.7972"
+     inkscape:cy="276.73588"
+     inkscape:window-width="2048"
+     inkscape:window-height="1082"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg36" />
+  <defs
+     id="defs5">
+    <marker
+       id="arrow-blue"
+       markerWidth="11"
+       markerHeight="11"
+       refX="9"
+       refY="4"
+       orient="auto"
+       markerUnits="strokeWidth">
+      <path
+         d="M0,0 L9,4 L0,8 Z"
+         fill="#2563eb"
+         id="path1" />
+    </marker>
+    <marker
+       id="arrow-orange"
+       markerWidth="11"
+       markerHeight="11"
+       refX="9"
+       refY="4"
+       orient="auto"
+       markerUnits="strokeWidth">
+      <path
+         d="M0,0 L9,4 L0,8 Z"
+         fill="#ea580c"
+         id="path2" />
+    </marker>
+    <marker
+       id="arrow-green"
+       markerWidth="11"
+       markerHeight="11"
+       refX="9"
+       refY="4"
+       orient="auto"
+       markerUnits="strokeWidth">
+      <path
+         d="M0,0 L9,4 L0,8 Z"
+         fill="#16a34a"
+         id="path3" />
+    </marker>
+    <marker
+       id="arrow-purple"
+       markerWidth="11"
+       markerHeight="11"
+       refX="9"
+       refY="4"
+       orient="auto"
+       markerUnits="strokeWidth">
+      <path
+         d="M0,0 L9,4 L0,8 Z"
+         fill="#7c3aed"
+         id="path4" />
+    </marker>
+    <linearGradient
+       id="sea"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="0">
+      <stop
+         offset="0"
+         stop-color="#dbeafe"
+         id="stop4" />
+      <stop
+         offset="1"
+         stop-color="#eff6ff"
+         id="stop5" />
+    </linearGradient>
+    <style
+       id="style5">
+      text { font-family: Arial, Helvetica, sans-serif; fill: #172033; }
+      .title { font-size: 24px; font-weight: 700; }
+      .label { font-size: 19px; font-weight: 700; }
+      .small { font-size: 16px; }
+      .note { font-size: 14px; fill: #475569; }
+      .num { font-size: 18px; font-weight: 700; fill: #ffffff; }
+    </style>
+  </defs>
+  <rect
+     width="1100"
+     height="700"
+     fill="url(#sea)"
+     id="rect5" />
+  <!-- Land and shoreline -->
+  <path
+     d="M0,0 H160 C140,72 178,126 146,188 C108,260 142,328 116,404 C86,492 126,588 96,700 H0 Z"
+     fill="#d6b082"
+     id="path5" />
+  <path
+     d="M160,0 C140,72 178,126 146,188 C108,260 142,328 116,404 C86,492 126,588 96,700"
+     fill="none"
+     stroke="#7c4a20"
+     stroke-width="5"
+     id="path6" />
+  <!-- Shore-distance bands. Farther right means more sea-room. -->
+  <path
+     d="M230,0 C212,82 248,142 216,212 C180,294 218,370 184,462 C152,552 194,628 168,700"
+     fill="none"
+     stroke="#dc2626"
+     stroke-width="4"
+     stroke-dasharray="9 9"
+     id="path7" />
+  <path
+     d="M360,0 C340,88 382,154 346,236 C306,326 352,406 314,510 C282,596 324,650 300,700"
+     fill="none"
+     stroke="#f59e0b"
+     stroke-width="4"
+     stroke-dasharray="13 10"
+     id="path8" />
+  <path
+     d="M565,0 C545,98 588,172 550,266 C508,368 562,454 516,574 C486,642 524,672 506,700"
+     fill="none"
+     stroke="#0ea5e9"
+     stroke-width="4"
+     stroke-dasharray="17 11"
+     id="path9" />
+  <!-- Legend -->
+  <rect
+     x="705"
+     y="36"
+     width="350"
+     height="154"
+     rx="6"
+     fill="#ffffff"
+     stroke="#cbd5e1"
+     id="rect9" />
+  <line
+     x1="730"
+     y1="74"
+     x2="790"
+     y2="74"
+     stroke="#dc2626"
+     stroke-width="4"
+     stroke-dasharray="9 9"
+     id="line9" />
+  <text
+     x="810"
+     y="80"
+     class="label"
+     id="text9">hard-clearance distance</text>
+  <line
+     x1="730"
+     y1="118"
+     x2="790"
+     y2="118"
+     stroke="#f59e0b"
+     stroke-width="4"
+     stroke-dasharray="13 10"
+     id="line10" />
+  <text
+     x="810"
+     y="124"
+     class="label"
+     id="text10">influence distance</text>
+  <line
+     x1="730"
+     y1="162"
+     x2="790"
+     y2="162"
+     stroke="#0ea5e9"
+     stroke-width="4"
+     stroke-dasharray="17 11"
+     id="line11" />
+  <text
+     x="810"
+     y="168"
+     class="label"
+     id="text11">early-exit distance</text>
+  <!-- Ship and preview point. Ship is inside early-exit; preview point is between hard-clearance and influence. -->
+  <g
+     transform="translate(505 440) rotate(-64)"
+     id="g12">
+    <path
+       d="M0,-36 L20,26 L0,38 L-20,26 Z"
+       fill="#1f2937"
+       stroke="#0f172a"
+       stroke-width="2"
+       id="path11" />
+    <line
+       x1="0"
+       y1="-28"
+       x2="0"
+       y2="28"
+       stroke="#94a3b8"
+       stroke-width="2"
+       id="line12" />
+  </g>
+  <g
+     transform="rotate(1,-20331.792,51544.502)"
+     id="g12-9">
+    <path
+       d="M 0,-36 20,26 0,38 -20,26 Z"
+       fill="#1f2937"
+       stroke="#0f172a"
+       stroke-width="2"
+       id="path11-4" />
+    <line
+       x1="0"
+       y1="-28"
+       x2="0"
+       y2="28"
+       stroke="#94a3b8"
+       stroke-width="2"
+       id="line12-8" />
+  </g>
+  <circle
+     cx="505"
+     cy="440"
+     r="6"
+     fill="#111827"
+     id="circle12" />
+  <circle
+     cx="305"
+     cy="322"
+     r="9"
+     fill="#2563eb"
+     stroke="#ffffff"
+     stroke-width="4"
+     id="circle13" />
+  <!-- Vectors -->
+  <line
+     x1="505"
+     y1="440"
+     x2="313"
+     y2="326"
+     stroke="#2563eb"
+     stroke-width="5"
+     marker-end="url(#arrow-blue)"
+     id="line13" />
+  <line
+     x1="305.39734"
+     y1="321.3797"
+     x2="486.50519"
+     y2="305.10236"
+     stroke="#16a34a"
+     stroke-width="5"
+     marker-end="url(#arrow-green)"
+     id="line14" />
+  <line
+     x1="306.0907"
+     y1="323.4267"
+     x2="290.37378"
+     y2="147.38698"
+     stroke="#ea580c"
+     stroke-width="5"
+     marker-end="url(#arrow-orange)"
+     id="line15" />
+  <line
+     x1="304.68591"
+     y1="318.26764"
+     x2="320.40286"
+     y2="494.30734"
+     stroke="#ea580c"
+     stroke-width="4"
+     stroke-dasharray="10, 8"
+     marker-end="url(#arrow-orange)"
+     id="line16" />
+  <line
+     x1="306.20337"
+     y1="319.29385"
+     x2="366.94278"
+     y2="165.67189"
+     stroke="#7c3aed"
+     stroke-width="6"
+     marker-end="url(#arrow-purple)"
+     id="line17" />
+  <!-- Numbered callouts on the diagram -->
+  <g
+     id="g40">
+    <circle
+       cx="505"
+       cy="440"
+       r="17"
+       fill="#111827"
+       id="circle17" />
+    <text
+       x="500"
+       y="447"
+       class="num"
+       id="text17">1</text>
+  </g>
+  <g
+     id="g38">
+    <circle
+       cx="305"
+       cy="322"
+       r="17"
+       fill="#2563eb"
+       id="circle18" />
+    <text
+       x="300"
+       y="329"
+       class="num"
+       id="text18">2</text>
+  </g>
+  <g
+     id="g37"
+     transform="translate(11.811897,11.811897)">
+    <circle
+       cx="484"
+       cy="290"
+       r="17"
+       fill="#16a34a"
+       id="circle19" />
+    <text
+       x="479"
+       y="297"
+       class="num"
+       id="text19">3</text>
+  </g>
+  <g
+     id="g39"
+     transform="translate(15.812586,-8.8347969)">
+    <circle
+       cx="274"
+       cy="148"
+       r="17"
+       fill="#ea580c"
+       id="circle20" />
+    <text
+       x="269"
+       y="155"
+       class="num"
+       id="text20">4</text>
+  </g>
+  <g
+     id="g36"
+     transform="translate(-60.184429,-53.997244)">
+    <circle
+       cx="430"
+       cy="214"
+       r="17"
+       fill="#7c3aed"
+       id="circle21" />
+    <text
+       x="425"
+       y="221"
+       class="num"
+       id="text21">5</text>
+  </g>
+  <!-- Short labels away from the busy center -->
+  <text
+     x="414.65909"
+     y="480.45453"
+     class="label"
+     id="text22">current ship position</text>
+  <text
+     x="791.14325"
+     y="445.30511"
+     class="label"
+     id="text22-5"
+     style="font-weight:700;font-size:19px;font-family:Arial, Helvetica, sans-serif;fill:#172033">No Obstacle Avoidance</text>
+  <text
+     x="436.93182"
+     y="500.06818"
+     class="note"
+     id="text23">inside early-exit band</text>
+  <text
+     x="822.59302"
+     y="421.24875"
+     class="note"
+     id="text23-2"
+     style="font-size:14px;font-family:Arial, Helvetica, sans-serif;fill:#475569">Outside early-exit band</text>
+  <text
+     x="172.1651"
+     y="353.36908"
+     class="label"
+     id="text24">preview point</text>
+  <text
+     x="172.1651"
+     y="375.36908"
+     class="note"
+     id="text25">inside influence band</text>
+  <text
+     x="516.81189"
+     y="303.81189"
+     class="label"
+     fill="#16a34a"
+     id="text26">away-from-shore</text>
+  <text
+     x="225.43387"
+     y="115.39374"
+     class="label"
+     fill="#ea580c"
+     id="text27">chosen tangent</text>
+  <text
+     x="324.15909"
+     y="505.60226"
+     class="note"
+     fill="#ea580c"
+     id="text28">other tangent</text>
+  <text
+     x="383.3158"
+     y="148.19087"
+     class="label"
+     fill="#7c3aed"
+     id="text29">final steering</text>
+  <text
+     x="334.65909"
+     y="393.56818"
+     class="label"
+     fill="#2563eb"
+     id="text30">original goal direction</text>
+  <!-- Explanation box -->
+  <text
+     x="10.62609"
+     y="113.74736"
+     class="title"
+     id="text6">Land / blocked</text>
+  <rect
+     x="69.91198"
+     y="579.28497"
+     width="600.17603"
+     height="82.803047"
+     rx="6.0017605"
+     fill="#ffffff"
+     stroke="#cbd5e1"
+     id="rect30"
+     style="stroke-width:0.823962" />
+  <text
+     x="94"
+     y="602"
+     class="small"
+     id="text32">1. Current point is inside early-exit, so the checker continues.</text>
+  <text
+     x="94"
+     y="628"
+     class="small"
+     id="text33">2. Preview point is inside influence, so avoidance receives weight.</text>
+  <text
+     x="94"
+     y="654"
+     class="small"
+     id="text34">3-5. Steering blends original goal, chosen tangent, and away direction.</text>
+</svg>

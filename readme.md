@@ -418,6 +418,110 @@ For the root group, if a doctrine is not **overridden**, a default value is used
 - **Max Fire Distance (<100 mm Batteries)** (Default: **Not Specified**): Same as above, but applies to rapid-fire batteries.
 - **Max Fire Distance (Torpedoes)** (Default: **Not Specified**): Same as above, but applies to torpedoes.
 
+## Tactical Maneuver Automation
+
+Automatic maneuvering has two broad modes:
+
+- **Operational mode:** used when the nearest enemy is farther than `16,000 yards`. Combat ships try to move toward contact using route/pathfinding. Non-combat ships, such as transports, turn away from the nearest enemy.
+- **Tactical mode:** used when the nearest enemy is within `16,000 yards`. The AI stops using long-route pursuit and searches for a favorable fighting heading.
+
+The game refreshes the hostile-proximity snapshot once per game minute. The maneuver decision itself is tied to the same 120-second clock used for weapon assignment, so a ship normally replans its tactical heading about once every two game minutes. Obstacle avoidance is applied afterward during normal movement processing, so it can alter the heading chosen by either the player or the AI.
+
+### Control Roots and Formation Members
+
+The tactical heading search is made at the control-root level. A control root is the independent ship at the head of a Follow or Relative chain/tree. If a formation is under automatic maneuver, the root chooses the trial heading, and the controlled ships are extrapolated according to their current formation links.
+
+For a follower, the planner assumes it remains at its follow distance behind the followed ship. For a relative-station ship, the planner assumes it remains at its assigned distance and bearing from the reference ship. This means the AI evaluates the formation as a group with the current formation links preserved.
+
+### Tactical Heading Search
+
+In tactical mode, the AI tests a set of possible headings for each automatic control root. For each trial heading, it extrapolates the friendly formation and enemy formations several minutes into the future, scores the resulting situation, and picks the heading with the highest score.
+
+The default search and scoring parameters are:
+
+- **Angle Step (`angleStepDeg`, default `18 degrees`):** candidate headings are sampled every 18 degrees around the compass, giving 20 trial headings: 0, 18, 36, and so on.
+- **Extrapolation Time (`extrapolateSeconds`, default `360 seconds`):** the planner estimates where ships would be after six minutes on the trial heading before scoring the result.
+- **Attack Coefficient (`attackCoef`, default `1.0`):** weight applied to the friendly side's projected offensive score.
+- **Defence Coefficient (`defenceCoef`, default `0.1`):** weight applied to reducing the enemy side's projected offensive score against the friendly side.
+- **Distance Coefficient (`distanceCoef`, default `1.0`):** weight applied to the desired combat-distance score.
+- **Expected Combat Range Low (`expectedCombatRangeYardLow`, default `3,500 yards`):** distance below this is considered too close for ordinary line ships, and the distance score becomes strongly unfavorable.
+- **Expected Combat Range High (`expectedCombatRangeYardHigh`, default `12,000 yards`):** distance beyond this is considered too far from contact, and the distance score becomes increasingly unfavorable.
+
+The tactical score has three parts:
+
+- **Friendly attack score:** the planner estimates how well friendly ships can bring weapons to bear. It favors directions that point stronger firing arcs toward valuable enemy targets.
+- **Enemy attack score:** the planner also estimates how well enemy ships can fire back. This score is subtracted with the defence coefficient, so avoiding enemy fire matters, but in the current default tuning it is weaker than gaining one's own firing opportunity.
+- **Distance score:** ordinary line ships prefer to stay in the expected fighting band. Below `3,500 yards`, the score drops by a logarithmic penalty. Between `3,500` and `12,000 yards`, there is no distance penalty. Beyond `12,000 yards`, the score declines as the ship loses contact.
+
+Ship role changes some of this scoring:
+
+- **Line:** ordinary combat ships use attack, defence, and distance scoring.
+- **Melee:** torpedo boats and destroyers are treated as close-attack craft. Their defence and distance concerns are reduced, allowing more aggressive closing behavior.
+- **Disengage:** transports are treated as disengaging units. Their own attack score is disabled.
+
+The firepower arcs used by the planner are smoothed between bow, starboard, stern, and port values. A target off the starboard bow, for example, receives a blended value between bow firepower and starboard firepower instead of snapping to a single hard arc.
+
+### Speed Selection
+
+Automatic maneuvering primarily searches heading. Speed is set more simply:
+
+- For an automatic control root, desired speed is usually set to the slowest useful maximum speed in its controlled group, minus `2 knots`.
+- Ships with maximum speed below `4 knots` are ignored when choosing the group speed floor.
+- If a ship recently collided, automatic maneuvering commands astern movement during the `300-second`.
+
+Formation followers can still adjust speed while trying to keep station. For example, a follower may speed up to close a gap, slow down if it is too close, or match the leader once the desired interval is reached.
+
+### Operational Mode and Route Pathfinding
+
+At distances greater than `16,000 yards`, automatic maneuvering uses operational behavior. This is mainly for approach, pursuit, or retreat before the close tactical heading search becomes useful.
+
+For combat ships, the game tries to build a route toward the nearest enemy.
+
+<img src="images/waypoint.jpg">
+
+When the enemy is still far away, route rebuilding can be cooled down for up to `20 minutes` to avoid excessive recalculation. If the ship closes to tactical distance, the automatic route is cleared and tactical heading search takes over.
+
+### Obstacle Avoidance
+
+Obstacle avoidance is applied every movement step after ordinary control and automatic maneuvering. It can modify the current desired heading for any operational deployed ship, including manually controlled ships unless player obstacle avoidance is disabled.
+
+For automatic ships, avoidance strength depends on range:
+
+- **Strong avoidance:** used in tactical mode, or when automatic control cannot resolve a clean independent control root.
+- **Weak avoidance:** used in operational mode (since obstacle is somewhat solved by pathfinding). It's also the player's default mode.
+
+Player-controlled ships use the player obstacle-avoidance preference, with available modes **None**, **Weak**, and **Strong**.
+
+The current primary avoidance method uses the ROI shore-distance field:
+
+<img src="images/ROI shore-field avoidance.svg">
+
+- The checker samples the ship's current shore distance and a preview point ahead on the current desired heading. This distance is measured in ROI shore-field pixels, where a larger value means more sea-room from land or other impassable shore-field cells.
+- If the current shore distance is already beyond the early-exit distance, the desired heading is accepted immediately.
+- The preview point is then compared with the **influence distance**. If the preview point is outside this distance, avoidance has no effect. If it is inside this distance, the closer it is to the **hard-clearance** distance, the stronger the avoidance weight becomes.
+- The **original goal direction** is the heading the ship wanted before local obstacle correction.
+- The **away-from-shore direction** is derived from the shore-field gradient. When both the current point and preview point have valid gradients, the game first combines them as 80% preview gradient + 20% current gradient, then normalizes the result. If the preview point has no valid gradient, use ony current gradient.
+- The **tangent direction** is perpendicular to the away-from-shore direction. It represents sliding along the shoreline instead of turning directly away from it. The checker computes both left and right tangents, then chooses the one closer to the original goal direction.
+- If the preview point is inside the hard-clearance distance, the steering is mostly tangent plus away-from-shore. If it is only inside the wider influence distance, the steering blends original goal, tangent, and away-from-shore directions.
+
+The Weak and Strong ROI parameters are:
+
+| Parameter | Weak | Strong | Meaning |
+| --- | ---: | ---: | --- |
+| `roiPreviewSeconds` | 37.5 | 75 | How far ahead the checker samples along the current movement direction. |
+| `roiHardClearancePixels` | 0.75 | 1.5 | Inside this shore-distance band, avoidance becomes urgent. |
+| `roiInfluenceDistancePixels` | 2 | 4 | Inside this band, the ship begins to bend away from the obstacle. |
+| `roiEarlyExitDistancePixels` | 7.5 | 15 | If the ship is farther from shore than this, the checker accepts the current heading without extra work. |
+
+If ROI shore-field avoidance is unavailable, the game falls back to a legacy heading test:
+
+- It starts from the current desired heading and searches alternately to the right and left.
+- Normal mode tests headings in `10 degree` increments; simple mode uses `20 degree` increments.
+- A candidate heading must pass checks at the heading itself and at `+/-10 degrees`, giving the ship a small angular safety margin.
+- Normal mode samples future positions at `30`, `60`, `120`, and `240` seconds ahead. Simple mode samples `60` seconds ahead.
+- If any sampled point is land elevation, that heading fails.
+- The first passing heading is used. If no candidate passes, the original desired heading remains.
+
 ## Plot Trajectory
 
 Game historical trajectory can be plotted for ship. In the Ship State View's Time Loc Tabs, click the "Plot Trajectory On Map" button above the record table:
