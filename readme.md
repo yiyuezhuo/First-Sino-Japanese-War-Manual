@@ -794,6 +794,192 @@ Horizontal penetration is:
 
 For **Rapid Firing Battery**, the optional metadata stores shell size and shell weight. If no metadata exists, shell size defaults to `1.85` inches. The **Infer Other** button in the metadata dialog only changes Damage Factor: if shell size is positive, `damageFactor = floor(-0.7518 + 4.9134 * shell size + 0.5)`; otherwise, if shell weight is positive, `damageFactor = floor(4.1853 + 1.4080 * shell weight - 0.04657 * shell weight^2 + 0.5)`. If neither value is positive, nothing is changed.
 
+### NAAB-like Calculator
+
+The **NAAB-like Calculator** is a shell trajectory and armor penetration tool inspired by [Naval Armor and Ballistics program](http://www.panzer-war.com/Naab/NAaB.html). It can be opened from the main menu for standalone experiments, or from a Battery record's metadata when fitting SK5 penetration table data back into a ship class.
+
+<img src="images/NAAB-like calculator.jpg">
+
+#### Models
+
+The calculator has two connected models: an exterior ballistic model that finds the shell's flight path, impact velocity, and angle of fall, and a terminal ballistic model that turns the impact state into vertical and horizontal armor penetration.
+
+##### Exterior ballistic
+
+The exterior-ballistic part follows the Army Standard Metro point-mass formulation described in Robert L. McCoy's [Modern Exterior Ballistics](https://www.mori.bz.it/Balistica/Mc%20Coy%20Modern%20Exterior%20Ballistic.pdf), Chapter 8, especially the standard-atmosphere discussion on pages `165`-`168` and the MCTRAJ Q-BASIC reference program on pages `183`-`185`.
+
+- The initial state is built from muzzle velocity and gun elevation:
+  - `theta = elevationDeg * pi / 180`.
+  - `vx = muzzleVelocityFeetPerSecond * cos(theta)`.
+  - `vy = muzzleVelocityFeetPerSecond * sin(theta)`.
+  - `x = 0`, `y = 0`, `time = 0`.
+- At each height `h` in feet, the pre-1962 atmosphere approximation is:
+  - `temperatureRankine = 518.67 * exp((-6.015e-06) * h) + 1e-10`.
+  - `soundFeetPerSecond = sqrt(temperatureRankine) * 49.19 + 1e-10`.
+  - `densityRatio = exp((-3.158e-05) * h)`.
+  - `radiusMeters = 6378135 + h * 0.3048`.
+  - `gravityFeetPerSecondSquared = (3.989411596224e14 / radiusMeters^2) / 0.3048`.
+- The shell speed and Mach number are:
+  - `speed = sqrt(vx^2 + vy^2)`.
+  - `mach = speed / soundFeetPerSecond`.
+- The selected drag function (`G1`, `G2`, `G5`, `G6`, `G7`, `G8`, `G9`, `GS`, or `GL`) supplies `cdRef` by interpolation from embedded drag tables.
+- The effective ballistic coefficient is normally `BC`. If **Drag Coefficient** is non-zero, the calculator adjusts only while `Mach > 1`. Before the shell first reaches `Mach <= 1`, the range term is simply current range. If a later state has already recorded a `Mach <= 1` crossing and then returns to `Mach > 1`, the solver uses:
+  - `rangeTerm = abs(firstMachLeOneRangeFeet + firstMachGtOneAfterThatRangeFeet - currentRangeFeet)`.
+  - `BCeff = max(0.01, BC + dragCoefficientAdjust * rangeTerm / 600000)`.
+- The differential equations are expressed against horizontal distance `x`, not directly against time:
+  - `dragSlope = 0.0002048757 * densityRatio * cdRef * speed / BCeff`.
+  - `dy/dx = vy / vx`.
+  - `dvx/dx = -dragSlope`.
+  - `dvy/dx = (dvx/dx) * (vy / vx) - gravityFeetPerSecondSquared / vx`.
+  - `dt/dx = 1 / vx`.
+- Integration uses the **Integration Step** field as a fixed horizontal step `dx` in feet. Each step first predicts an Euler point, then uses the average of the starting and predicted slopes:
+  - `nextValue = currentValue + 0.5 * dx * (slopeAtCurrent + slopeAtPredicted)`.
+- For a ground-impact run, the solver continues until the shell crosses `y = 0`, `time > 300`, the horizontal velocity collapses, or the simulation range limit is reached. The impact point is linearly interpolated between the last positive-height state and the first non-positive-height state.
+- The exterior result is:
+  - `rangeYards = impactXFeet / 3`.
+  - `timeOfFlightSeconds = impactTime`.
+  - `impactVelocityFeetPerSecond = sqrt(impactVx^2 + impactVy^2)`.
+  - `angleOfFallDeg = max(atan2(-impactVy, impactVx) * 180 / pi, 0)`.
+- When solving for a requested target range rather than firing to the ground at a fixed elevation, the solver searches for the low-angle firing solution. It scans elevation windows, brackets the requested range, and refines the elevation until the target range is reached.
+
+##### Terminal ballistic
+
+The terminal-ballistic is a mixed implementation based on Nathan Okun's armor penetration programs, including the homogeneous-armor [M79APCLC](https://www.navweaps.com/index_nathan/M79apdoc.php) and face-hardened armor [FaceHard](https://www.warship1.cn/navweaps/index_nathan.htm) references (mainly M79APCLC), while emulate parts of Steven Lorenz's [Naval Armor and Ballistics](http://www.panzer-war.com/Naab/NAaB.html) program to leverage its data as reference. The result should be close to NAAB's result but not identical.
+
+- For a given impact velocity and obliquity, the solver scans armor thickness `T` from `0.1` inches to `min(6 * projectileDiameter - 0.1, 199)` inches in `0.02` inch steps.
+- For each candidate thickness:
+  - `D = max(projectileDiameterInches, 0.1)`.
+  - `td = clamp(T / D, 0.001, 5.99999)`.
+  - `WoverD3 = max(totalWeightPounds / D^3, 1e-9)`.
+  - `plateQuality = clamp(armorQuality * HardnessProfile(235) / HardnessProfile(BHN), 0.5, 1.1)`.
+  - The embedded `td` tables select `A`, `B`, a sine amplitude, a sine frequency, and a sine phase.
+  - `tdShape = 1 + sineAmplitude * max(sin((td * sineFrequency - sinePhaseDeg) * pi / 180), 0)`.
+  - `diameterScale = sqrt(max(1e-9, 1 - 0.04 * ln(D / 3)))`.
+  - `elongationFactor = 1 - (1 - sqrt(clamp(elongationPercent, 0.1, 25) / 25)) * (max(D, 8) - 8) / 8`.
+  - `baseNBL = A * (max(plateQuality, 0.01) * td)^B * tdShape * diameterScale / sqrt(WoverD3)`.
+- Obliquity then modifies `baseNBL`:
+  - If obliquity is below `45` degrees, `obliquityMultiplier = interpolate(lowObliquityReferenceVector, obliquity) / cos(obliquity)`.
+  - If obliquity is `45` degrees or higher, `obliquityMultiplier = bilinearInterpolate(highObliquityReferenceMatrix, td, obliquity) / cos(obliquity)`.
+  - `baseNBL *= obliquityMultiplier` when obliquity is above `0.1` degrees.
+- Windscreens and AP caps add to NBL through table-based addends:
+  - `windscreenPercent = 100 * windscreenWeightPounds / totalWeightPounds`.
+  - `windscreenAddend = (windscreenPercent / 5.1) * selectedWindscreenMultiplier * interpolatedWindscreenTableValue`, unless the shell has no windscreen or the plate is too thin for that addend.
+  - Hard caps and medium caps use `apCapPercent = 100 * apCapWeightPounds / totalWeightPounds`.
+  - For hard caps, `capRatio = apCapPercent / 20` and the low-obliquity cutoff is `50` degrees.
+  - For medium caps, `capRatio = apCapPercent / 10` and the low-obliquity cutoff is `65` degrees.
+  - The cap threshold is `0.42` above `65` degrees, `0.44 - 0.002 * (obliquity - 55)` above `55` degrees, and `0.66 - 0.18 * (obliquity / 45)` otherwise, rounded to `0.001`.
+  - If `td` is above the threshold and obliquity is below the cap type's cutoff, the cap addend is `capTableValue * (1 + 0.6 * (capRatio - 1))`.
+  - If `td` is not above the threshold and `40 < obliquity < 75`, the shared mid-obliquity cap addend is `sharedCapTableValue * capRatio`.
+- The final normal ballistic limit is:
+  - `trueNBL = baseNBL * elongationFactor * (1 + windscreenAddend + capAddend)`.
+- The scanned thickness triplet is:
+  - **Full penetration limit**: first `T` where `impactVelocity <= trueNBL`.
+  - **Partial penetration limit**: first `T` where `round(impactVelocity) + 60 <= round(trueNBL)`.
+  - **No-holing limit**: first `T` where `round(impactVelocity) + 120 < round(trueNBL)`.
+- The triplet is post-scaled by shell quality and extreme obliquity:
+  - If `80 <= obliquity < 90`, `extremeScale = (cos(obliquity) / cos(80))^1.1`; otherwise `extremeScale = 1`.
+  - `postScale = extremeScale * clamp(effectiveShellQuality, 0.2, 1.2)`.
+  - The displayed penetration uses the post-scaled **full penetration limit**.
+- The calculator computes both vertical and horizontal armor penetration from the same impact state:
+  - `sideObliquity = armorInclinedDeg + angleOfFallDeg`.
+  - `deckObliquity = armorInclinedDeg + max(90 - angleOfFallDeg, 0)`.
+  - `verticalPenetration = FullPenetration(impactVelocity, sideObliquity)`.
+  - `horizontalPenetration = FullPenetration(impactVelocity, deckObliquity)`.
+
+##### Parameter meanings
+
+- **Armor Preset**: fills the armor fields with a known quality, elongation, and BHN combination.
+- **Armor Quality**: material quality multiplier before BHN correction.
+- **Elongation (%)**: ductility input used by the terminal model's `elongationFactor`.
+- **BHN**: Brinell hardness number. It changes the effective plate quality through the embedded hardness profile.
+- **Inclined (deg)**: extra obliquity added to side and deck penetration calculations.
+- **Projectile Preset**: fills the shell fields with a known projectile.
+- **Diameter**: shell caliber in inches.
+- **Total Weight**: complete projectile weight in pounds, used in `W / D^3`.
+- **Body Weight**: shell body weight. It is stored with the projectile data and is useful for comparing shell designs.
+- **Windscreen**: windscreen weight in pounds, converted to `windscreenPercent`.
+- **AP Cap Weight**: armor-piercing cap weight in pounds, converted to `apCapPercent`.
+- **Cap Type**: `None`, `Hard Cap`, `Medium Cap`, `Soft Cap`, or `Hood`. The current terminal formula applies cap addends only to hard and medium caps.
+- **Windscreen NBL Addend Multiplier**: normal multiplier for the windscreen NBL addend.
+- **Hi-Obl Windscreen NBL Addend Mult.**: alternate windscreen multiplier used above the high-obliquity threshold.
+- **High-Obliquity Threshold**: obliquity where the high-obliquity windscreen multiplier starts to apply. A non-positive value disables the alternate multiplier.
+- **Muzzle Velocity**: launch velocity in feet per second.
+- **Max Range**: maximum range in yards. It is used as the simulation limit, the maximum-range fitting target, and the Battery record range during Sync Back.
+- **Max Elevation**: maximum gun elevation in degrees.
+- **Drag Function**: reference drag curve used for `cdRef`.
+- **Ballistic Coefficient**: main exterior ballistic tuning parameter.
+- **Drag Coefficient**: optional range-dependent adjustment to the ballistic coefficient.
+- **Effective Shell Quality**: final post-scale for terminal penetration, clamped to `0.2` through `1.2`.
+- **Integration Step**: horizontal integration step in feet. Smaller values are slower but more precise.
+- **Elevation Mode**:
+  - **Range**: fires a series of fixed elevations from Start Elevation to End Elevation by Elevation Step.
+  - **Search Fix**: solves the low-angle firing solution at regular range intervals set by Range Step.
+  - **Search SK5**: solves the low-angle firing solution at SK5 penetration-table ranges, or at the default SK5 range list when no source table is available.
+- **Plot Mode**:
+  - **None**: only the result list is shown.
+  - **Trajectories**: plots shell trajectories. When many rows exist, the chart shows representative first, middle, and last trajectories.
+  - **Penetration**: plots horizontal and vertical penetration against range.
+
+#### Usage
+
+- **Simple use without SK5 Data**:
+	- Open **NAAB-like Calculator** from the main menu.
+	- On the **Ballistic** tab, choose a projectile preset and an armor preset, or enter the projectile and armor parameters manually.
+	- Use **Elevation Mode** to decide what rows are generated:
+		- **Range** is best for seeing what a fixed set of elevations does. It is useful for comparing trajectory shapes.
+		- **Search Fix** is best for penetration curves at evenly spaced distances.
+		- **Search SK5** is still usable without SK5 data; it uses the standard SK5 distance list and includes Max Range when needed.
+	- Use **Plot Mode** to choose the chart:
+		- **Trajectories** shows range versus height.
+		- **Penetration** shows range versus horizontal and vertical penetration.
+	- Press **Calculate**. The result table columns are:
+		- **Range**: impact range in yards, or the requested target range when the solver is in a search mode.
+		- **Horizontal Pen**: calculated deck/horizontal penetration in inches. Without SK5 comparison data it is displayed as a single value.
+		- **Vertical Pen**: calculated side/vertical penetration in inches. Without SK5 comparison data it is displayed as a single value.
+		- **ROF**: calculated rounds per two minutes when SK5 comparison context exists. The formula is `min(120 / (timeOfFlight + fallToNextFireSeconds), maxRateOfFireShootPerMin * 2)`.
+		- **Range Band**: range band inferred from angle of fall. The thresholds are **Short** below `7` degrees, **Medium** from `7` to `20` degrees, **Long** above `20` through `40` degrees, and **Extreme** above `40` degrees.
+		- **Impact Velocity**: impact speed in feet per second.
+		- **Angle of Fall**: downward impact angle in degrees.
+		- **Time of Flight**: flight time in seconds.
+		- **Elevation**: gun elevation used to reach that row.
+
+- **SK5 fitting workflow**:
+	- Open the **Ship Class Editor**, go to the relevant **Battery** record, and press **Meta Info**.
+	- In the metadata dialog, enable **Has Meta Info** if needed. The dialog stores the NAAB-like projectile seed for this Battery record. If metadata is created from an existing Battery record, shell size, shell weight, and range are used to initialize the projectile.
+	- Press **Open NAAB-like Calculator** from the metadata dialog. This launch mode is different from the simple main-menu mode because the calculator is now tied to the source Battery record and can compare against, fit, and sync back SK5 data.
+	- On the **SK5 Data** tab, review or edit the source penetration rows:
+	    - **Range Band**: SK5 range band for the row.
+	    - **Distance Yards**: row distance in yards. During fitting, the last row uses Battery Max Range as the target range, because Battery penetration rows are threshold rows.
+	    - **Rate of Fire**: SK5 rounds per two minutes for the row.
+	    - **Hor Pen**: SK5 horizontal penetration in inches.
+	    - **Vert Pen**: SK5 vertical penetration in inches.
+	    - **Max ROF**: gun mechanical maximum rate of fire in shots per minute. The calculator converts it to rounds per two minutes with `maxRateOfFireShootPerMin * 2`.
+	    - **Fall To Next Fire (s)**: delay added after shell fall before the next firing cycle. It participates in `120 / (timeOfFlight + fallToNextFireSeconds)`.
+	- Fit the exterior ballistics first:
+		- Set a reasonable projectile, muzzle velocity, max range, max elevation, drag function, drag coefficient adjustment, and integration step.
+		- Press **Fit External Ballistic**.
+		- The fit adjusts **Ballistic Coefficient**. **Drag Coefficient** remains fixed, so use it manually when a single ballistic coefficient cannot match both the short-range and long-range behavior.
+		- For each SK5 row, the solver predicts the angle of fall and converts it to a range band. The range-band score is `bandDelta^2 * 10`, with a failed solution counted as `100`.
+		- The max-range score is `(predictedMaxRange - MaxRange)^2 / MaxRange^2 * 250`, with a failed max-range solution counted as `250`.
+		- The best ballistic coefficient is applied back to the visible fields and the calculator reruns.
+	- Fit the terminal ballistics second:
+		- After the exterior fit is close enough, press **Fit Terminal Ballistic**.
+		- The fit adjusts **Effective Shell Quality**.
+		- For each SK5 row, the calculator computes vertical and horizontal penetration from the fitted impact velocity and angle of fall.
+		- The score is the sum of squared relative errors: if the SK5 value is positive, `((calculated - SK5) / SK5)^2`; if the SK5 value is non-positive, a non-positive calculated value scores `0` and any positive calculated value scores `1`.
+		- The best shell quality is applied back to the visible fields and the calculator reruns.
+	- Inspect the comparison results:
+		- When SK5 data is present, **Horizontal Pen** and **Vertical Pen** are displayed as `calculated/SK5 in`.
+		- **ROF** is displayed as `calculated/SK5`.
+		- **Range Band** is displayed as `calculated/SK5`.
+		- If the exterior range bands are off, adjust exterior parameters and refit. If the penetration numbers are off after the exterior fit is acceptable, adjust armor or projectile terminal parameters and refit shell quality.
+	- Sync the fitted data back:
+		- Use **Round Sync Back Values To 1 Decimal** when you want the Battery record to keep SK5-style one-decimal penetration and ROF values.
+		- Press **Sync Back**. This is only available when the calculator was opened from a Battery metadata dialog.
+		- Confirm the summary of added, deleted, and changed rows.
+		- Sync Back writes Battery Max Range, Max ROF, Shell Size, Shell Weight, the Battery penetration table, the stored NAAB-like projectile metadata, and Fall To Next Fire.
+		- The generated penetration table uses calculated range, calculated ROF, calculated range band, horizontal penetration, and vertical penetration. If a calculated row is the Battery max range, its table distance is stored as the next SK5 threshold row while the actual max range remains on the Battery record.
+
 ### Existing weapon selector
 
 <img src="images/battery-rapid-fire-battery-torpedo-selector.jpg">
