@@ -1119,22 +1119,57 @@ Edit: A pre-calculated distance & gradient field data is added as well to enhanc
 
 ## Tactical Naval System Shortcuts
 
+Hotkeys are ignored while a UI Toolkit field or control has keyboard focus. Most map-click tools also require the pointer to be over the map instead of over the UI.
+
 Basic:
 
-- Left Click: Select Unit
-- Right Click: Select Unit and open Ship State Editor for it.
-- Shift + Left Click: Set course for the selected unit
-- D: Distance measuring line
-- S: Line of Sight (check ship masking & Earth curvature)
-- I: Detach unit (set control mode to Independent)
-- F: Set follow target (extra parameter requires Ship State editor)
-- R: Set relative to target (extra parameter requires Ship State editor)
-- L: Open Ship State Editor for the selected ship
-- A: Set Manual Fire constraint
-- Esc: Reset UI to idle state.
+- Left Click: Select unit.
+- Right Click on the selected unit: Open the Ship State view for it.
+- Right Click on the map while a ship is selected: Set course for the selected unit.
+- Shift + Left Click: Set course for the selected unit.
+- Esc: Cancel the current map command, clear the current ship selection, or leave waypoint/line-tool mode.
+
+Camera:
+
+- Right Click + Drag: Pan the tactical camera.
+- Scroll Wheel: Zoom the tactical camera in or out.
+- Middle Mouse / Mouse Wheel Button + Drag Up or Down: Tilt the tactical camera into or out of the 3D view.
+- H: Return the tactical camera to 2D view.
+
+Movement and formation:
+
+- W: Toggle waypoint route editing for the selected ship.
+- I: Detach unit (set control mode to Independent).
+- F: Set follow target (extra parameter requires Ship State editor).
+- R: Set relative-to target (extra parameter requires Ship State editor).
+- M: Move selected ship to another point.
+- L: Open Ship State view for the selected ship.
+
+Combat and map tools:
+
+- A: Set the selected ship's ship-level firing target / manual fire constraint.
+- D: Distance measuring line.
+- S: Line of Sight (check ship masking & Earth curvature).
+- P: Pathfinding line.
+- Alt + P: Exact pathfinding line.
+
+Time advance:
+
+- 1-9: Advance by 1-9 minutes.
+- ` or ~: Advance by one pulse.
+- Space: Toggle auto-play in single-player mode. Auto-play is disabled in multiplayer.
 
 Edit:
 
-- Insert: Insert a Ship on map. (Deploy a "non-deployed" ship to map).
-- Delete: Delete selected ship.
-- M: Move selected ship to another point.
+- Insert: Insert a ship on the map (deploy a non-deployed ship to the map).
+- Alt + Insert: Insert a location label.
+- Delete: Undeploy the selected ship (move it back to the not-deployed map state).
+
+## Strategic Mode Shortcuts
+
+- Insert: Choose and place a strategic group on the next clicked cell.
+- M: Start a new move order for the selected strategic group.
+- Alt + M: Edit the selected strategic group's move path.
+- A: Append movement to the selected strategic group's planned path.
+- Space: Toggle realtime advance.
+- Esc: Return to select mode, cancel the pending cell-click command, and clear the current selection.
