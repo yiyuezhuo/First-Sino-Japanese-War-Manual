@@ -652,7 +652,7 @@ After enabling **Edit Mode**, the Ship Class Editor can be used to edit existing
 - **Physically meaningful real-world data**: displacement, armor, speed, rate of fire, penetration tables, etc.
 - **Abstract system parameters in the SK5 system**: hit points, damage control value, target size, fire control value, Battery Data Rating, etc.
 
-The SK5 rulebook itself does not explain all of these abstract system parameters are calculated. However, discussions on forums have mentioned possible calculation methods, or certain relationships are self-evident (for example, the fire control value of _Narrow_ is 60% of the corresponding _Broad_ value). To make it easier for players to create custom ships without needing to fully understand the rulebook or gather scattered information, most of these abstract system parameters in the game can be assigned default values derived from physically meaningful real-world data (players can later override these defaults). Some of these are based on fixed rules, while others come from fitted approximations (which are more applicable to pre-dreadnought ships). Some of the rules are as follows:
+The SK5 rulebook itself does not explain how does these abstract system parameters are calculated. However, discussions on forums have mentioned possible calculation methods, or certain relationships are self-evident (for example, the fire control value of _Narrow_ is 60% of the corresponding _Broad_ value). To make it easier for players to create custom ships without needing to fully understand the rulebook or gather scattered information, most of these abstract system parameters in the game can be assigned default values derived from physically meaningful real-world data (players can later override these defaults). Some of these are based on fixed rules, while others come from fitted approximations (which are more applicable to pre-dreadnought ships). Some of the rules are as follows:
 
 When **Displacement** is edited through the Ship Class Editor, the editor immediately refreshes the following default values. These values are only defaults; they can still be edited manually afterward.
 
@@ -660,24 +660,24 @@ When **Displacement** is edited through the Ship Class Editor, the editor immedi
 - **Target Size Modifier**:
 
 | Displacement (tons) | Target Size Modifier |
-| ---: | ---: |
-| `<= 671.5` | `-1` |
-| `<= 3110` | `0` |
-| `<= 16660` | `1` |
-| `> 16660` | `2` |
+| ------------------: | -------------------: |
+|          `<= 671.5` |                 `-1` |
+|           `<= 3110` |                  `0` |
+|          `<= 16660` |                  `1` |
+|           `> 16660` |                  `2` |
 
 - **Damage Control Rating**:
 
 | Displacement (tons) | Damage Control Rating |
-| ---: | ---: |
-| `<= 111` | `0` |
-| `<= 1092` | `1` |
-| `<= 2975` | `2` |
-| `<= 3040` | `1` |
-| `<= 6202.5` | `3` |
-| `<= 9978` | `4` |
-| `<= 14262.5` | `5` |
-| `> 14262.5` | `6` |
+| ------------------: | --------------------: |
+|            `<= 111` |                   `0` |
+|           `<= 1092` |                   `1` |
+|           `<= 2975` |                   `2` |
+|           `<= 3040` |                   `1` |
+|         `<= 6202.5` |                   `3` |
+|           `<= 9978` |                   `4` |
+|        `<= 14262.5` |                   `5` |
+|         `> 14262.5` |                   `6` |
 
 - **Length, Beam, Draft, and Complement** are fitted estimates from displacement and ship type. The shared form is `exp(intercept + coefficient * ln(max(1, displacement tons)) + type offset)`. Length and beam are rounded to the nearest foot, draft is rounded to one decimal foot, and complement is rounded to the nearest integer with a minimum of `1`.
 
@@ -688,57 +688,59 @@ When **Displacement** is edited through the Ship Class Editor, the editor immedi
 | Draft | `0.4707447` | `0.2975393` |
 | Complement | `0.1084306` | `0.6979308` |
 
-| Ship Type | Length Offset | Beam Offset | Draft Offset | Complement Offset |
-| --- | ---: | ---: | ---: | ---: |
-| Battleship | `-0.2935404` | `0.0903524` | `-0.0231818` | `-0.2131911` |
-| Armored Cruiser | `-0.1377085` | `0.0465869` | `0.0322265` | `0.0607233` |
-| Torpedo Boat | `0.5236686` | `0.0391832` | `-0.4071087` | `-0.2046980` |
-| Destroyer | `0.5377667` | `-0.0055650` | `-0.1104536` | `-0.0844927` |
-| Patrol Gunboat | `0.0132753` | `0.0545587` | `-0.1003142` | `-0.1349758` |
-| Transport | `0.0905690` | `0.0005691` | `0.5143422` | `-0.6856862` |
-| Armed Merchant Cruiser | `0.1020602` | `0.0099036` | `0.5230984` | `-0.6651469` |
-| Repair | `0.2181666` | `-0.1220814` | `-0.4029193` | `-0.4685847` |
-| Battlecruiser | `-0.0521659` | `0.0744055` | `-0.1574514` | `-0.3309420` |
-| Other types | `0` | `0` | `0` | `0` |
+| Ship Type              | Length Offset |  Beam Offset | Draft Offset | Complement Offset |
+| ---------------------- | ------------: | -----------: | -----------: | ----------------: |
+| Battleship             |  `-0.2935404` |  `0.0903524` | `-0.0231818` |      `-0.2131911` |
+| Armored Cruiser        |  `-0.1377085` |  `0.0465869` |  `0.0322265` |       `0.0607233` |
+| Torpedo Boat           |   `0.5236686` |  `0.0391832` | `-0.4071087` |      `-0.2046980` |
+| Destroyer              |   `0.5377667` | `-0.0055650` | `-0.1104536` |      `-0.0844927` |
+| Patrol Gunboat         |   `0.0132753` |  `0.0545587` | `-0.1003142` |      `-0.1349758` |
+| Transport              |   `0.0905690` |  `0.0005691` |  `0.5143422` |      `-0.6856862` |
+| Armed Merchant Cruiser |   `0.1020602` |  `0.0099036` |  `0.5230984` |      `-0.6651469` |
+| Repair                 |   `0.2181666` | `-0.1220814` | `-0.4029193` |      `-0.4685847` |
+| Battlecruiser          |  `-0.0521659` |  `0.0744055` | `-0.1574514` |      `-0.3309420` |
+| Other types            |           `0` |          `0` |          `0` |               `0` |
 
 Changing **Ship Type** also recalculates length, beam, draft, and complement from the current displacement.
 
 **Armor** is stored as actual inches and effective inches for each armor location. When an Armor Type is selected, the editor sets the armor coefficient from the table below and recalculates every effective armor value as `round(actual inches * coefficient, 1)`. If the coefficient is edited directly, the editor tries to infer the Armor Type only when exactly one armor type has that coefficient; otherwise the type becomes `NotSpecified` (Not defined or mixed).
 
-| Armor Type | Coefficient |
-| --- | ---: |
-| No Armor | `0` |
-| Wrought Iron | `0.6` |
-| Mild Steel | `0.75` |
-| Compound Hard Steel Faced Wrought Iron | `0.68` |
-| Nickel Steel | `0.9` |
-| Harvey Mild Steel | `0.74` |
-| Harvey Nickel Steel | `0.78` |
-| Krupp Chrome Nickel Steel | `0.95` |
-| Krupp Cemented 1894 | `0.83` |
-| High Tensile Steel | `0.82` |
-| Class A Armor 1900 | `0.83` |
-| Krupp Nickel Steel | `0.83` |
-| Krupp Non-Cemented | `0.95` |
-| Krupp Cemented WW1 Era 1905 | `0.83` |
-| Witkowitzer KC | `0.95` |
-| Class A Armor Midvale Non-Cemented | `0.88` |
-| Class B Armor 1910 | `0.95` |
-| Special Treatment Steel | `1` |
-| Class A Armor 1911 | `0.89` |
-| Krupp Cemented WW1 Era 1911 | `0.85` |
-| Krupp Wolan Hard Nickel Steel | `1` |
-| D Silicon Manganese HT Steel | `0.9` |
-| New Vickers Non-Cemented | `0.95` |
-| Non-Cemented Armor | `1` |
-| Krupp Cemented 1928 | `1` |
-| PO Homogenous Plate | `1` |
-| Italian WW2 Era Krupp Cemented | `1` |
-| British Cemented Armor | `1` |
-| Class B Armor 1933 | `1` |
-| Class A Armor 1933 | `1` |
-| Vickers Non-Cemented | `0.84` |
-| Molybdenum Non-Cemented | `0.97` |
+| Armor Type                             | SK5 Armor Factor | Okun Material / Rule                                     | Okun Field       | Okun Value                               | Derivation              |
+| -------------------------------------- | ---------------: | -------------------------------------------------------- | ---------------- | ---------------------------------------- | ----------------------- |
+| No Armor                               |                0 | -                                                        | -                | -                                        | game placeholder        |
+| Wrought Iron                           |             0.60 | WROUGHT IRON ARMOR                                       | Average Quality  | approx. 0.55-0.60                        | selected / rounded      |
+| Mild Steel                             |             0.75 | AVE. “MILD/MEDIUM” STEEL                                 | Average Quality  | 0.75                                     | direct                  |
+| Compound Hard Steel Faced Wrought Iron |             0.68 | “COMPOUND” HARD-STEEL-FACED WROUGHT IRON                 | Q / QD           | Q=0.75; QD=0.60                          | likely mean / rounded   |
+| Nickel Steel                           |             0.90 | AVE. NICKEL-STEEL ARMOR                                  | Average Quality  | 0.90                                     | direct                  |
+| Harvey Mild Steel                      |             0.74 | AVE. HARVEYIZED MILD STEEL                               | Q / QD           | Q=0.78; QD=0.70                          | mean(Q,QD)              |
+| Harvey Nickel Steel                    |             0.78 | AVE. HARVEYIZED NICKEL-STEEL                             | Q / QD           | Q≈0.805; QD≈0.75                         | mean / rounded          |
+| Krupp Chrome Nickel Steel              |             0.95 | Krupp “HIGH-%” Nickel-Steel                              | Average Quality  | 0.95                                     | direct                  |
+| Krupp Cemented 1894                    |             0.83 | Original KC / KC a/A                                     | Q                | Q=0.828                                  | rounded                 |
+| High Tensile Steel                     |             0.82 | AVE. HIGH-TENSILE STEEL                                  | Average Quality  | 1895=0.80; post-WWI=0.85                 | interpolated / selected |
+| Class A Armor 1900                     |             0.83 | AVE. WWI-ERA CLASS “A” ARMOR / early Class A rule        | Q                | Q≈0.828                                  | rounded                 |
+| Krupp Nickel Steel                     |             0.83 | likely KC a/A or default pre-1911 FH armor               | Q                | Q≈0.828                                  | rounded                 |
+| Krupp Non-Cemented                     |             0.95 | KRUPP NON-CEMENTED / KNC-like homogeneous armor          | Average Quality  | 0.95                                     | direct                  |
+| Krupp Cemented WW1 Era 1905            |             0.83 | default face-hardened armor through 1910                 | Q                | Q=0.828                                  | rounded                 |
+| Witkowitzer KC                         |             0.95 | IMPROVED AUSTRO-HUNGARIAN WITKOWITZER KC                 | Q                | Q=0.947                                  | rounded                 |
+| Class A Armor Midvale Non-Cemented     |             0.88 | MIDVALE NON-CEMENTED CLASS “A”                           | Q / special case | likely around 0.889 or scaling-dependent | uncertain               |
+| Class B Armor 1910                     |             0.95 | early STS / WWI-era Class “B” homogeneous armor          | Average Quality  | 0.95                                     | direct                  |
+| Special Treatment Steel                |             1.00 | SPECIAL TREATMENT STEEL / STS                            | Average Quality  | 1.00                                     | direct                  |
+| Class A Armor 1911                     |             0.89 | AVE. WWI-ERA CLASS “A” ARMOR                             | Q                | Q=0.889                                  | rounded                 |
+| Krupp Cemented WW1 Era 1911            |             0.85 | default FH armor 1911–1921                               | Q                | Q=0.850                                  | direct                  |
+| Krupp Wotan Hard Nickel Steel          |             1.00 | German WOTAN HART / Wh / Wotan Härte                     | Average Quality  | 1.00                                     | direct                  |
+| D Silicon Manganese HT Steel           |             0.90 | AVE. EXTRA-HIGH-STRENGTH “D” SILICON-MANGANESE HT STEELS | Average Quality  | 0.90                                     | direct                  |
+| New Vickers Non-Cemented               |             0.95 | NEW VICKERS NON-CEMENTED / NVNC                          | Average Quality  | 0.95                                     | direct                  |
+| Non-Cemented Armor                     |             1.00 | AVE. NON-CEMENTED ARMOR / NCA                            | Average Quality  | 1.00                                     | direct                  |
+| Krupp Cemented 1928                    |             1.00 | Krupp Cemented new type / KC n/A                         | Q                | Q=1.00                                   | direct                  |
+| PO Homogenous Plate                    |             1.00 | PIASTRE OMOGENEE / PO                                    | Average Quality  | 1.00 estimated                           | direct                  |
+| Italian WW2 Era Krupp Cemented         |             1.00 | ITALIAN WWII KRUPP CEMENTED                              | Q                | Q=1.00 estimated                         | direct                  |
+| British Cemented Armor                 |             1.00 | BRITISH CEMENTED ARMOR / CA                              | Q                | Q=1.00                                   | direct                  |
+| Class B Armor 1933                     |             1.00 | WWII-era CLASS “B” ARMOR                                 | Average Quality  | 1.00                                     | direct                  |
+| Class A Armor 1933                     |             1.00 | improved USN CLASS “A” ARMOR / post-1921 FH default      | Q                | 1.00                                     | direct / default        |
+| Vickers Non-Cemented                   |             0.84 | VICKERS HARDENED NON-CEMENTED / VH                       | Q                | Q=0.839                                  | rounded                 |
+| Molybdenum Non-Cemented                |             0.97 | MOLYBDENUM NON-CEMENTED / MNC                            | Average Quality  | 0.97                                     | direct                  |
+
+(The above table is mix of SK5 chart value and their Okun's material derivation: [Table of Metallurgical Properties of Naval Armor and Construction Materials](http://www.navweaps.com/index_nathan/metalprpsept2009.php) )
 
 For **Battery** records, editing Shell Size or Shell Weight through the editor updates **Damage Rating** as `floor(0.4 + 1.30 * shell size in inches + 0.82 * sqrt(shell weight in pounds) + 0.5)`. The value remains manually editable afterward.
 
@@ -809,82 +811,80 @@ The calculator has two connected models: an exterior ballistic model that finds 
 The exterior-ballistic part follows the Army Standard Metro point-mass formulation described in Robert L. McCoy's [Modern Exterior Ballistics](https://www.mori.bz.it/Balistica/Mc%20Coy%20Modern%20Exterior%20Ballistic.pdf), Chapter 8, especially the standard-atmosphere discussion on pages `165`-`168` and the MCTRAJ Q-BASIC reference program on pages `183`-`185`.
 
 - The initial state is built from muzzle velocity and gun elevation:
-  - `theta = elevationDeg * pi / 180`.
-  - `vx = muzzleVelocityFeetPerSecond * cos(theta)`.
-  - `vy = muzzleVelocityFeetPerSecond * sin(theta)`.
-  - `x = 0`, `y = 0`, `time = 0`.
+	- `theta = elevationDeg * pi / 180`.
+	- `vx = muzzleVelocityFeetPerSecond * cos(theta)`.
+	- `vy = muzzleVelocityFeetPerSecond * sin(theta)`.
+	- `x = 0`, `y = 0`, `time = 0`.
 - At each height `h` in feet, the pre-1962 atmosphere approximation is:
-  - `temperatureRankine = 518.67 * exp((-6.015e-06) * h) + 1e-10`.
-  - `soundFeetPerSecond = sqrt(temperatureRankine) * 49.19 + 1e-10`.
-  - `densityRatio = exp((-3.158e-05) * h)`.
-  - `radiusMeters = 6378135 + h * 0.3048`.
-  - `gravityFeetPerSecondSquared = (3.989411596224e14 / radiusMeters^2) / 0.3048`.
+	- `temperatureRankine = 518.67 * exp((-6.015e-06) * h) + 1e-10`.
+	- `soundFeetPerSecond = sqrt(temperatureRankine) * 49.19 + 1e-10`.
+	- `densityRatio = exp((-3.158e-05) * h)`.
+	- `radiusMeters = 6378135 + h * 0.3048`.
+	- `gravityFeetPerSecondSquared = (3.989411596224e14 / radiusMeters^2) / 0.3048`.
 - The shell speed and Mach number are:
-  - `speed = sqrt(vx^2 + vy^2)`.
-  - `mach = speed / soundFeetPerSecond`.
+	- `speed = sqrt(vx^2 + vy^2)`.
+	- `mach = speed / soundFeetPerSecond`.
 - The selected drag function (`G1`, `G2`, `G5`, `G6`, `G7`, `G8`, `G9`, `GS`, or `GL`) supplies `cdRef` by interpolation from embedded drag tables.
 - The effective ballistic coefficient is normally `BC`. If **Drag Coefficient** is non-zero, the calculator adjusts only while `Mach > 1`. Before the shell first reaches `Mach <= 1`, the range term is simply current range. If a later state has already recorded a `Mach <= 1` crossing and then returns to `Mach > 1`, the solver uses:
-  - `rangeTerm = abs(firstMachLeOneRangeFeet + firstMachGtOneAfterThatRangeFeet - currentRangeFeet)`.
-  - `BCeff = max(0.01, BC + dragCoefficientAdjust * rangeTerm / 600000)`.
+	- `rangeTerm = abs(firstMachLeOneRangeFeet + firstMachGtOneAfterThatRangeFeet - currentRangeFeet)`.
+	- `BCeff = max(0.01, BC + dragCoefficientAdjust * rangeTerm / 600000)`.
 - The differential equations are expressed against horizontal distance `x`, not directly against time:
-  - `dragSlope = 0.0002048757 * densityRatio * cdRef * speed / BCeff`.
-  - `dy/dx = vy / vx`.
-  - `dvx/dx = -dragSlope`.
-  - `dvy/dx = (dvx/dx) * (vy / vx) - gravityFeetPerSecondSquared / vx`.
-  - `dt/dx = 1 / vx`.
+	- `dragSlope = 0.0002048757 * densityRatio * cdRef * speed / BCeff`.
+	- `dy/dx = vy / vx`.
+	- `dvx/dx = -dragSlope`.
+	- `dvy/dx = (dvx/dx) * (vy / vx) - gravityFeetPerSecondSquared / vx`.
+	- `dt/dx = 1 / vx`.
 - Integration uses the **Integration Step** field as a fixed horizontal step `dx` in feet. Each step first predicts an Euler point, then uses the average of the starting and predicted slopes:
-  - `nextValue = currentValue + 0.5 * dx * (slopeAtCurrent + slopeAtPredicted)`.
+	- `nextValue = currentValue + 0.5 * dx * (slopeAtCurrent + slopeAtPredicted)`.
 - For a ground-impact run, the solver continues until the shell crosses `y = 0`, `time > 300`, the horizontal velocity collapses, or the simulation range limit is reached. The impact point is linearly interpolated between the last positive-height state and the first non-positive-height state.
 - The exterior result is:
-  - `rangeYards = impactXFeet / 3`.
-  - `timeOfFlightSeconds = impactTime`.
-  - `impactVelocityFeetPerSecond = sqrt(impactVx^2 + impactVy^2)`.
-  - `angleOfFallDeg = max(atan2(-impactVy, impactVx) * 180 / pi, 0)`.
+	- `rangeYards = impactXFeet / 3`.
+	- `timeOfFlightSeconds = impactTime`.
+	- `impactVelocityFeetPerSecond = sqrt(impactVx^2 + impactVy^2)`.
+	- `angleOfFallDeg = max(atan2(-impactVy, impactVx) * 180 / pi, 0)`.
 - When solving for a requested target range rather than firing to the ground at a fixed elevation, the solver searches for the low-angle firing solution. It scans elevation windows, brackets the requested range, and refines the elevation until the target range is reached.
 
 ##### Terminal ballistic
 
-The terminal-ballistic is a mixed implementation based on Nathan Okun's armor penetration programs, including the homogeneous-armor [M79APCLC](https://www.navweaps.com/index_nathan/M79apdoc.php) and face-hardened armor [FaceHard](https://www.warship1.cn/navweaps/index_nathan.htm) references (mainly M79APCLC), while emulate parts of Steven Lorenz's [Naval Armor and Ballistics](http://www.panzer-war.com/Naab/NAaB.html) program to leverage its data as reference. The result should be close to NAAB's result but not identical.
+The terminal-ballistic model can be read as two layers:
 
-- For a given impact velocity and obliquity, the solver scans armor thickness `T` from `0.1` inches to `min(6 * projectileDiameter - 0.1, 199)` inches in `0.02` inch steps.
-- For each candidate thickness:
-  - `D = max(projectileDiameterInches, 0.1)`.
-  - `td = clamp(T / D, 0.001, 5.99999)`.
-  - `WoverD3 = max(totalWeightPounds / D^3, 1e-9)`.
-  - `plateQuality = clamp(armorQuality * HardnessProfile(235) / HardnessProfile(BHN), 0.5, 1.1)`.
-  - The embedded `td` tables select `A`, `B`, a sine amplitude, a sine frequency, and a sine phase.
-  - `tdShape = 1 + sineAmplitude * max(sin((td * sineFrequency - sinePhaseDeg) * pi / 180), 0)`.
-  - `diameterScale = sqrt(max(1e-9, 1 - 0.04 * ln(D / 3)))`.
-  - `elongationFactor = 1 - (1 - sqrt(clamp(elongationPercent, 0.1, 25) / 25)) * (max(D, 8) - 8) / 8`.
-  - `baseNBL = A * (max(plateQuality, 0.01) * td)^B * tdShape * diameterScale / sqrt(WoverD3)`.
-- Obliquity then modifies `baseNBL`:
-  - If obliquity is below `45` degrees, `obliquityMultiplier = interpolate(lowObliquityReferenceVector, obliquity) / cos(obliquity)`.
-  - If obliquity is `45` degrees or higher, `obliquityMultiplier = bilinearInterpolate(highObliquityReferenceMatrix, td, obliquity) / cos(obliquity)`.
-  - `baseNBL *= obliquityMultiplier` when obliquity is above `0.1` degrees.
-- Windscreens and AP caps add to NBL through table-based addends:
-  - `windscreenPercent = 100 * windscreenWeightPounds / totalWeightPounds`.
-  - `windscreenAddend = (windscreenPercent / 5.1) * selectedWindscreenMultiplier * interpolatedWindscreenTableValue`, unless the shell has no windscreen or the plate is too thin for that addend.
-  - Hard caps and medium caps use `apCapPercent = 100 * apCapWeightPounds / totalWeightPounds`.
-  - For hard caps, `capRatio = apCapPercent / 20` and the low-obliquity cutoff is `50` degrees.
-  - For medium caps, `capRatio = apCapPercent / 10` and the low-obliquity cutoff is `65` degrees.
-  - The cap threshold is `0.42` above `65` degrees, `0.44 - 0.002 * (obliquity - 55)` above `55` degrees, and `0.66 - 0.18 * (obliquity / 45)` otherwise, rounded to `0.001`.
-  - If `td` is above the threshold and obliquity is below the cap type's cutoff, the cap addend is `capTableValue * (1 + 0.6 * (capRatio - 1))`.
-  - If `td` is not above the threshold and `40 < obliquity < 75`, the shared mid-obliquity cap addend is `sharedCapTableValue * capRatio`.
-- The final normal ballistic limit is:
-  - `trueNBL = baseNBL * elongationFactor * (1 + windscreenAddend + capAddend)`.
-- The scanned thickness triplet is:
-  - **Full penetration limit**: first `T` where `impactVelocity <= trueNBL`.
-  - **Partial penetration limit**: first `T` where `round(impactVelocity) + 60 <= round(trueNBL)`.
-  - **No-holing limit**: first `T` where `round(impactVelocity) + 120 < round(trueNBL)`.
-- The triplet is post-scaled by shell quality and extreme obliquity:
-  - If `80 <= obliquity < 90`, `extremeScale = (cos(obliquity) / cos(80))^1.1`; otherwise `extremeScale = 1`.
-  - `postScale = extremeScale * clamp(effectiveShellQuality, 0.2, 1.2)`.
-  - The displayed penetration uses the post-scaled **full penetration limit**.
-- The calculator computes both vertical and horizontal armor penetration from the same impact state:
-  - `sideObliquity = armorInclinedDeg + angleOfFallDeg`.
-  - `deckObliquity = armorInclinedDeg + max(90 - angleOfFallDeg, 0)`.
-  - `verticalPenetration = FullPenetration(impactVelocity, sideObliquity)`.
-  - `horizontalPenetration = FullPenetration(impactVelocity, deckObliquity)`.
+- **Okun basis**: the normal ballistic limit calculation is based on Nathan Okun's armor penetration programs, mainly the homogeneous-armor [M79APCLC](https://www.navweaps.com/index_nathan/M79apdoc.php), with [FaceHard](https://www.warship1.cn/navweaps/index_nathan.htm) used as a reference for related projectile, cap, and armor terminology.
+	- For a plate thickness `T`, the Okun-style homogeneous-armor core uses:
+		- `D = max(projectileDiameterInches, 0.1)`.
+		- `td = clamp(T / D, 0.001, 5.99999)`.
+		- `WoverD3 = max(totalWeightPounds / D^3, 1e-9)`.
+		- The embedded `td` tables select `A`, `B`, a sine amplitude, a sine frequency, and a sine phase.
+		- `tdShape = 1 + sineAmplitude * max(sin((td * sineFrequency - sinePhaseDeg) * pi / 180), 0)`.
+		- `diameterScale = sqrt(max(1e-9, 1 - 0.04 * ln(D / 3)))`.
+		- `elongationFactor = 1 - (1 - sqrt(clamp(elongationPercent, 0.1, 25) / 25)) * (max(D, 8) - 8) / 8`.
+		- `baseNBL = A * (max(plateQuality, 0.01) * td)^B * tdShape * diameterScale / sqrt(WoverD3)`.
+	- Obliquity then modifies `baseNBL`:
+		- If obliquity is below `45` degrees, `obliquityMultiplier = interpolate(lowObliquityReferenceVector, obliquity) / cos(obliquity)`.
+		- If obliquity is `45` degrees or higher, `obliquityMultiplier = bilinearInterpolate(highObliquityReferenceMatrix, td, obliquity) / cos(obliquity)`.
+		- `baseNBL *= obliquityMultiplier` when obliquity is above `0.1` degrees.
+- **NAAB-like layer**: the calculator emulates parts of Steven Lorenz's [Naval Armor and Ballistics](http://www.panzer-war.com/Naab/NAaB.html) program so that I can compare result of NAAB's projectile data. The result should be close to NAAB though not identical. 
+	- The armor input is converted into the effective `plateQuality` used by the Okun-style core:
+		- `plateQuality = clamp(armorQuality * HardnessProfile(235) / HardnessProfile(BHN), 0.5, 1.1)`.
+	- Windscreens and AP caps add to NBL through table-based addends:
+		- `windscreenPercent = 100 * windscreenWeightPounds / totalWeightPounds`.
+		- `windscreenAddend = (windscreenPercent / 5.1) * selectedWindscreenMultiplier * interpolatedWindscreenTableValue`, unless the shell has no windscreen or the plate is too thin for that addend.
+		- Hard caps and medium caps use `apCapPercent = 100 * apCapWeightPounds / totalWeightPounds`.
+		- For hard caps, `capRatio = apCapPercent / 20` and the low-obliquity cutoff is `50` degrees.
+		- For medium caps, `capRatio = apCapPercent / 10` and the low-obliquity cutoff is `65` degrees.
+		- The cap threshold is `0.42` above `65` degrees, `0.44 - 0.002 * (obliquity - 55)` above `55` degrees, and `0.66 - 0.18 * (obliquity / 45)` otherwise, rounded to `0.001`.
+		- If `td` is above the threshold and obliquity is below the cap type's cutoff, the cap addend is `capTableValue * (1 + 0.6 * (capRatio - 1))`.
+		- If `td` is not above the threshold and `40 < obliquity < 75`, the shared mid-obliquity cap addend is `sharedCapTableValue * capRatio`.
+	- The final normal ballistic limit is:
+		- `trueNBL = baseNBL * elongationFactor * (1 + windscreenAddend + capAddend)`.
+	- Search for the armor thickness `T` such that `trueNBL(T, obliquity) == impactVelocity`.
+	- `T` is post-scaled by shell quality and extreme obliquity:
+		- If `80 <= obliquity < 90`, `extremeScale = (cos(obliquity) / cos(80))^1.1`; otherwise `extremeScale = 1`.
+		- `postScale = extremeScale * clamp(effectiveShellQuality, 0.2, 1.2)`.
+	- The calculator computes both vertical and horizontal armor penetration from the same impact state:
+		- `sideObliquity = armorInclinedDeg + angleOfFallDeg`.
+		- `deckObliquity = armorInclinedDeg + max(90 - angleOfFallDeg, 0)`.
+		- `verticalPenetration = T(impactVelocity, sideObliquity) * postScale`.
+		- `horizontalPenetration = T(impactVelocity, deckObliquity) * postScale`.
 
 ##### Parameter meanings
 
