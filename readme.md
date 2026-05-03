@@ -1058,6 +1058,118 @@ The 3 non-"physical" effectiveness attribute, suppression, morale and fatigue is
 
 These value with strength modify the "lethality" (a concept taken from JTS Squad Battle), which effect inflict hits and if a "breakthrough" (situation push) is achieved.
 
+# Game Preference Dialog
+
+The **Game Preference** dialog is available from the top tabs in both tactical and strategic modes. Most fields are applied through live data binding while the dialog is open. Press **Confirm** to store supported preferences for later sessions.
+
+<img src="images/Game-Preference-Dialog.jpg">
+
+## View
+
+- **UI Language:** changes the game UI locale. It also updates the default short-label language and merged-name language inclusion to match the selected locale.
+- **Short Label Language:** selects the language used by short names, such as compact unit/map labels.
+	- **English:** use the English short name.
+	- **Japanese:** use the Japanese short name, falling back to English if needed.
+	- **ChineseSimplified:** use the Simplified Chinese short name, falling back to English if needed.
+	- **ChineseTraditional:** use the Traditional Chinese short name, falling back to Simplified Chinese and then English if needed.
+	- **All:** use the merged-name form for short labels.
+- **Long Label Language:** selects the language mode used when the game asks for a long or merged name.
+	- **English:** use the English name.
+	- **Japanese:** use the Japanese name
+	- **ChineseSimplified:** use the Simplified Chinese name
+	- **ChineseTraditional:** use the Traditional Chinese name
+	- **All:** build a merged name from the enabled **Include ... In Merged Name** toggles below.
+- **Include English In Merged Name:** includes English when a name is shown in merged-name mode.
+- **Include Japanese In Merged Name:** includes Japanese when a name is shown in merged-name mode.
+- **Include Simplified Chinese In Merged Name:** includes Simplified Chinese when a name is shown in merged-name mode.
+- **Include Traditional Chinese In Merged Name:** includes Traditional Chinese when a name is shown in merged-name mode.
+- **Firing Line Display:** controls which ships draw firing/targeting lines.
+	- **None:** draw no firing lines.
+	- **SelectedShip:** draw lines only for the selected ship.
+	- **SelectedGroup:** (OOB Group) draw lines for ships in the selected ship's same level-1 group. 
+	- **SelectedControlRoot:** (Effective Group) draw lines for ships sharing the selected ship's current control root.
+	- **SelectedRootGroup:** (Side) draw lines for ships in the selected ship's root group.
+	- **All:** draw lines for all deployed ships.
+- **Range Ring Display:** controls weapon range visualization.
+	- **Circle:** draw full range circles.
+	- **MergedArcs:** merge overlapping valid fire arcs before drawing.
+	- **DistinctArcs:** draw valid fire arcs separately.
+- **Pulse Length (Sec):** sets the amount of simulation time advanced by the one-pulse command, such as the backquote/tilde hotkey.
+- **Simulation Rate Ratio:** sets the tactical time scale used for normal requested advances, such as 1-9 minute advances. A value of `120` means 1 real second advances 120 simulation seconds.
+- **Simulation Rate Ratio (Auto):** sets the tactical time scale used by auto-play.
+- **Ship Icon:** chooses the ship map presentation style.
+	- **Icon:** use a transparent/top image style.
+	- **Counter:** use a counter-like top image style.
+- **Ship Portrait Scale:** scales the ship model/portrait marker used on the tactical map.
+- **Ship Text Scale:** scales text labels attached to ship map markers.
+- **Icon Beam Scale:** adjusts the apparent beam/width of icon markers to improve recognition.
+- **Fetch Info Display Acc Threshold (Seconds):** sets how long an image/info fetch may run before the loading/busy display is shown.
+- **Editor Mode:** enables editing-oriented UI and behavior.
+- **Debug:** enables debug-facing bindings and UI elements where the current screen exposes them. It is mainly for development and diagnostics.
+- **Earth Dark Theme:** switches the tactical globe/earth shader to the dark-theme variant.
+- **Use Sea Texture:** toggles sea texture rendering on the tactical globe.
+- **Show ROI Shore Distance Field:** shows the region-of-interest shore distance field used by shore/pathfinding diagnostics.
+- **Show ROI Shore Gradient Field:** shows the region-of-interest shore gradient field used by shore/pathfinding diagnostics.
+- **Pathfinding Passable Shore Distance (Pixels):** sets the shore clearance threshold used by tactical route/pathfinding tools. Larger values treat more near-shore pixels as blocked.
+- **Unit Label:** controls tactical map unit labels.
+	- **None:** hide unit labels.
+	- **Unit:** show unit name.
+	- **Formation:** show only formation's name.
+- **Show Damage Point Bar On Map:** shows or hides the damage point bar above deployed ships.
+- **Forced Naval Combat Resolution:** in strategic mode, pending naval combats must be resolved before realtime strategic advance can continue. If disabled, strategic advance is allowed to continue past pending naval combat prompts.
+- **Show AI Dialog when first loaded:** shows the tactical AI dialog the first time a naval scenario is loaded, unless the scenario disables the startup AI dialog.
+- **Show Sunk Ships:** controls whether sunk/destroyed ships remain visible on the tactical map.
+- **3D Base:** shows or hides the runtime 3D hull/base under tactical ship portraits.
+- **Enable Gunnery Shell Visual:** enables or disables visual shell/projectile effects during tactical gunnery.
+- **Gunnery Shell Radius Scale Coef:** scales the radius of gunnery shell visual effects. The value is clamped to at least `1`.
+- **Enable Audio:** enables or mutes game audio.
+- **Audio Volume:** sets global volume from `0` to `1`.
+
+## Naval Tactical Core
+
+### Balance & Performance
+
+- **Land Collision:** enables land collision checks for ships and torpedoes. When on, movement into land is blocked or torpedoes self-destruct on land.
+- **Relaxed Collision:** makes land collision less strict for ships by ignoring very small blocked turning points if a farther point on the same movement line is clear.
+- **Ship Collision:** enables ship collision checks during ship movement. Hostile collisions can block movement and may trigger ramming damage.
+- **Friendly Ship Collision:** if ship collision is enabled, also treats friendly ship collisions as blocking. If off, friendly overlap is ignored for blocking purposes.
+- **Disable Battery Ammunition Cost:** main/secondary battery fire no longer spends battery ammunition.
+- **Disable Rapid Firing Battery Ammunition Cost:** rapid-firing battery fire no longer spends rapid-firing ammunition.
+- **Battery Detail Show Non-Active Modifier:** shows inactive or neutral fire-control modifiers in battery detail breakdowns instead of hiding entries with no current effect.
+- **Global Hit Coef:** multiplies final battery hit probability after table lookup and modifiers.
+- **No Penetration Damage Coef:** scales damage points and damage-effect probability for no-penetration shell results.
+- **Torpedo Friendly Collision Process Mode:** controls torpedo collision with friendly ships. Hostile torpedo collisions still resolve as hits.
+	- **Hit:** friendly torpedo collision resolves as a hit.
+	- **Passthrough:** friendly torpedo collision is ignored.
+	- **Dub:** friendly torpedo collision ends the torpedo as a dud/end event.
+- **Torpedo Firing Angle Error (deg):** adds a random firing-angle error between negative and positive this many degrees to automatic torpedo launches.
+- **Disable Torpedo Reload:** disables torpedo reload behavior.
+- **Enable Leader Rule Variant:** enables the leader-rule variant, allowing commander Naval Tactical ratings to modify fire-control resolution.
+
+### AI
+
+- **Angle Step (Deg):** sets the heading sample interval for tactical maneuver AI. For example, `18` degrees gives 20 candidate headings around the compass.
+- **Attack Coef:** weight applied to the friendly attack score when AI evaluates candidate headings.
+- **Defence Coef:** weight applied to reducing enemy attack score against the friendly side.
+- **Distance Coef:** weight applied to the preferred combat-range score.
+- **Extrapolate Seconds:** how far into the future the tactical maneuver AI projects ships before scoring a candidate heading.
+- **Enable ROI Shore-Field Avoidance:** enables the ROI shore-field obstacle avoidance model used by automated/player-controlled movement when avoidance is active.
+- **Player Control Obstacle Avoidance:** controls obstacle avoidance for player-controlled ships.
+	- **None:** do not apply player-control obstacle avoidance.
+	- **Weak:** use the lighter avoidance parameters.
+	- **Strong:** use the stricter avoidance parameters.
+- **Combat Expected Range (Low, yard):** lower edge of the AI's preferred combat distance band. Being closer than this is penalized.
+- **Combat Expected Range (High, yard):** upper edge of the AI's preferred combat distance band. Being farther than this is penalized.
+- **Auto Torpedo Firing Range Relaxed Coef:** multiplies torpedo range for automatic torpedo target/firing consideration. A larger value makes auto torpedo use more willing at long range.
+
+### Misc
+
+- **Reference Time Zone:** sets the reference UTC offset used when displaying scenario/log timestamps.
+
+## Strategic Core
+
+- **Day Advance Hour Interval (Sec):** sets the base real-time delay between one-hour strategic turns during realtime strategic advance. Slow mode uses twice this interval; fast mode uses half of it.
+
 # FAQ
 
 ## Localization Quality Issues?
