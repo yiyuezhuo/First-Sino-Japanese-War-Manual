@@ -437,6 +437,8 @@ For a follower, the planner assumes it remains at its follow distance behind the
 
 In tactical mode, the AI tests a set of possible headings for each automatic control root. For each trial heading, it extrapolates the friendly formation and enemy formations several minutes into the future, scores the resulting situation, and picks the heading with the highest score.
 
+<img src="images/Tactical Heading Search.svg">
+
 The default search and scoring parameters are:
 
 - **Angle Step (`angleStepDeg`, default `18 degrees`):** candidate headings are sampled every 18 degrees around the compass, giving 20 trial headings: 0, 18, 36, and so on.

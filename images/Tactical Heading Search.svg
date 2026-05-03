@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1200"
+   height="720"
+   viewBox="0 0 1200 720"
+   role="img"
+   aria-labelledby="title desc"
+   version="1.1"
+   id="svg56"
+   sodipodi:docname="Tactical Heading Search.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview56"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.61111111"
+     inkscape:cx="426.27273"
+     inkscape:cy="216"
+     inkscape:window-width="2048"
+     inkscape:window-height="1082"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg56" />
+  <title
+     id="title">Tactical heading search projection diagram</title>
+  <desc
+     id="desc">A tactical heading search example. One friendly column and one enemy column are shown at their current positions. The friendly control root tests three projected directions: current heading, port 36 degrees, and starboard 36 degrees. The enemy column is projected once on its current heading. The starboard 36 degree friendly projection is selected as the best score.</desc>
+  <defs
+     id="defs12">
+    <style
+       id="style1">
+      .bg { fill: #f7fbff; }
+      .grid { stroke: #d8e6f2; stroke-width: 1; opacity: 0.72; }
+      .zone { fill: #ffffff; stroke: #d4e0ea; stroke-width: 1.5; }
+      .blue-line { stroke: #1466c3; stroke-width: 4; stroke-linecap: round; }
+      .red-line { stroke: #c33a35; stroke-width: 4; stroke-linecap: round; }
+      .blue-ghost { stroke: #4c98dc; stroke-width: 2.7; stroke-dasharray: 8 8; stroke-linecap: round; opacity: 0.78; }
+      .red-ghost { stroke: #d96a62; stroke-width: 2.7; stroke-dasharray: 8 8; stroke-linecap: round; opacity: 0.82; }
+      .trial-line { stroke: #637083; stroke-width: 2.5; stroke-dasharray: 8 7; fill: none; }
+      .best-line { stroke: #c58a13; stroke-width: 4; fill: none; }
+      .score-line { stroke: #574a2a; stroke-width: 2; stroke-dasharray: 5 5; opacity: 0.68; }
+      .blue-ship { fill: #2f7ed8; stroke: #0d4d94; stroke-width: 2; }
+      .red-ship { fill: #d84c45; stroke: #8b251f; stroke-width: 2; }
+      .ship-deck { stroke: #ffffff; stroke-width: 2; stroke-linecap: round; opacity: 0.92; }
+      .proj-blue { fill: #92c6f4; stroke: #206daa; stroke-width: 1.8; opacity: 0.86; }
+      .proj-red { fill: #ee9b94; stroke: #a83731; stroke-width: 1.8; opacity: 0.86; }
+      .best-ship { fill: #3e91de; stroke: #b57900; stroke-width: 3; }
+      .fire-blue { fill: #2f7ed8; opacity: 0.12; stroke: #2f7ed8; stroke-width: 1.1; }
+      .fire-red { fill: #d84c45; opacity: 0.12; stroke: #d84c45; stroke-width: 1.1; }
+      .fire-best { fill: #f1a40b; opacity: 0.18; stroke: #c58a13; stroke-width: 1.5; }
+      .label { font-family: &quot;Segoe UI&quot;, Arial, sans-serif; fill: #17324d; font-size: 18px; }
+      .small { font-family: &quot;Segoe UI&quot;, Arial, sans-serif; fill: #315069; font-size: 14px; }
+      .tiny { font-family: &quot;Segoe UI&quot;, Arial, sans-serif; fill: #42627a; font-size: 12px; }
+      .caption { font-family: &quot;Segoe UI&quot;, Arial, sans-serif; fill: #15324a; font-size: 22px; font-weight: 700; }
+      .badge { fill: #fff3cf; stroke: #d19015; stroke-width: 2; }
+      .panel-title { font-family: &quot;Segoe UI&quot;, Arial, sans-serif; fill: #17324d; font-size: 17px; font-weight: 700; }
+      .panel-text { font-family: &quot;Segoe UI&quot;, Arial, sans-serif; fill: #315069; font-size: 13px; }
+    </style>
+    <marker
+       id="arrow-gray"
+       markerWidth="10"
+       markerHeight="10"
+       refX="8"
+       refY="5"
+       orient="auto"
+       markerUnits="strokeWidth">
+      <path
+         d="M 0 0 L 10 5 L 0 10 z"
+         fill="#637083"
+         id="path1" />
+    </marker>
+    <marker
+       id="arrow-best"
+       markerWidth="10"
+       markerHeight="10"
+       refX="8"
+       refY="5"
+       orient="auto"
+       markerUnits="strokeWidth">
+      <path
+         d="M 0 0 L 10 5 L 0 10 z"
+         fill="#c58a13"
+         id="path2" />
+    </marker>
+    <marker
+       id="arrow-score"
+       markerWidth="9"
+       markerHeight="9"
+       refX="7"
+       refY="4.5"
+       orient="auto"
+       markerUnits="strokeWidth">
+      <path
+         d="M 0 0 L 9 4.5 L 0 9 z"
+         fill="#574a2a"
+         id="path3" />
+    </marker>
+    <g
+       id="ship-blue">
+      <polygon
+         class="blue-ship"
+         points="0,-23 10,-13 10,18 0,25 -10,18 -10,-13"
+         id="polygon3" />
+      <line
+         class="ship-deck"
+         x1="0"
+         y1="-14"
+         x2="0"
+         y2="13"
+         id="line3" />
+    </g>
+    <g
+       id="ship-red">
+      <polygon
+         class="red-ship"
+         points="0,-23 10,-13 10,18 0,25 -10,18 -10,-13"
+         id="polygon4" />
+      <line
+         class="ship-deck"
+         x1="0"
+         y1="-14"
+         x2="0"
+         y2="13"
+         id="line4" />
+    </g>
+    <g
+       id="ship-proj-blue">
+      <polygon
+         class="proj-blue"
+         points="0,-19 8,-10 8,15 0,21 -8,15 -8,-10"
+         id="polygon5" />
+      <line
+         class="ship-deck"
+         x1="0"
+         y1="-11"
+         x2="0"
+         y2="10"
+         id="line5" />
+    </g>
+    <g
+       id="ship-proj-red">
+      <polygon
+         class="proj-red"
+         points="0,-19 8,-10 8,15 0,21 -8,15 -8,-10"
+         id="polygon6" />
+      <line
+         class="ship-deck"
+         x1="0"
+         y1="-11"
+         x2="0"
+         y2="10"
+         id="line6" />
+    </g>
+    <g
+       id="ship-best-blue">
+      <polygon
+         class="best-ship"
+         points="0,-20 9,-11 9,16 0,22 -9,16 -9,-11"
+         id="polygon7" />
+      <line
+         class="ship-deck"
+         x1="0"
+         y1="-12"
+         x2="0"
+         y2="11"
+         id="line7" />
+    </g>
+    <g
+       id="broadside-blue">
+      <path
+         class="fire-blue"
+         d="M0,0 L55,-46 A72,72 0 0 1 55,46 Z"
+         id="path7" />
+      <path
+         class="fire-blue"
+         d="M0,0 L-55,46 A72,72 0 0 1 -55,-46 Z"
+         id="path8" />
+    </g>
+    <g
+       id="broadside-red">
+      <path
+         class="fire-red"
+         d="M0,0 L55,-46 A72,72 0 0 1 55,46 Z"
+         id="path9" />
+      <path
+         class="fire-red"
+         d="M0,0 L-55,46 A72,72 0 0 1 -55,-46 Z"
+         id="path10" />
+    </g>
+    <g
+       id="broadside-best">
+      <path
+         class="fire-best"
+         d="M0,0 L64,-54 A84,84 0 0 1 64,54 Z"
+         id="path11" />
+      <path
+         class="fire-best"
+         d="M0,0 L-64,54 A84,84 0 0 1 -64,-54 Z"
+         id="path12" />
+    </g>
+  </defs>
+  <rect
+     class="bg"
+     x="0"
+     y="0"
+     width="1200"
+     height="720"
+     id="rect12" />
+  <g
+     id="g14">
+    <path
+       class="grid"
+       d="M80 80H1120M80 160H1120M80 240H1120M80 320H1120M80 400H1120M80 480H1120M80 560H1120M80 640H1120"
+       id="path13" />
+    <path
+       class="grid"
+       d="M120 60V680M240 60V680M360 60V680M480 60V680M600 60V680M720 60V680M840 60V680M960 60V680M1080 60V680"
+       id="path14" />
+  </g>
+  <text
+     class="panel-title"
+     x="145.09091"
+     y="600"
+     id="text15">Current friendly column</text>
+  <text
+     class="small"
+     x="145.09091"
+     y="624"
+     id="text16">The actual formation now</text>
+  <text
+     class="panel-title"
+     x="927"
+     y="225.27272"
+     id="text17">Current enemy column</text>
+  <text
+     class="small"
+     x="927"
+     y="249.27272"
+     id="text18">The actual formation now</text>
+  <path
+     class="blue-line"
+     d="M95 610 L160 563 L225 516"
+     id="path18" />
+  <use
+     href="#ship-blue"
+     transform="translate(95 610) rotate(54)"
+     id="use18" />
+  <use
+     href="#ship-blue"
+     transform="translate(160 563) rotate(54)"
+     id="use19" />
+  <use
+     href="#ship-blue"
+     transform="translate(225 516) rotate(54)"
+     id="use20" />
+  <path
+     class="red-line"
+     d="M1080 104 L1011 144 L942 184"
+     id="path20" />
+  <use
+     href="#ship-red"
+     transform="translate(1080 104) rotate(240)"
+     id="use21" />
+  <use
+     href="#ship-red"
+     transform="translate(1011 144) rotate(240)"
+     id="use22" />
+  <use
+     href="#ship-red"
+     transform="translate(942 184) rotate(240)"
+     id="use23" />
+  <path
+     class="trial-line"
+     marker-end="url(#arrow-gray)"
+     d="M225 516 L336 174"
+     id="path23" />
+  <path
+     class="trial-line"
+     marker-end="url(#arrow-gray)"
+     d="M225 516 L516 304"
+     id="path24" />
+  <path
+     class="best-line"
+     marker-end="url(#arrow-best)"
+     d="M225 516 L700 516"
+     id="path25" />
+  <text
+     class="small"
+     x="548"
+     y="542"
+     id="text27">Right 36 deg sample: 90 deg</text>
+  <g
+     opacity="0.76"
+     id="g32">
+    <path
+       class="blue-ghost"
+       d="M286 326 L311 250 L336 174"
+       id="path27" />
+    <use
+       href="#broadside-blue"
+       transform="translate(286 326) rotate(18)"
+       id="use27" />
+    <use
+       href="#broadside-blue"
+       transform="translate(311 250) rotate(18)"
+       id="use28" />
+    <use
+       href="#broadside-blue"
+       transform="translate(336 174) rotate(18)"
+       id="use29" />
+    <use
+       href="#ship-proj-blue"
+       transform="translate(286 326) rotate(18)"
+       id="use30" />
+    <use
+       href="#ship-proj-blue"
+       transform="translate(311 250) rotate(18)"
+       id="use31" />
+    <use
+       href="#ship-proj-blue"
+       transform="translate(336 174) rotate(18)"
+       id="use32" />
+  </g>
+  <text
+     class="small"
+     x="265.54544"
+     y="139.36363"
+     id="text32">Projected friendly: a left sample</text>
+  <g
+     opacity="0.68"
+     id="g38">
+    <path
+       class="blue-ghost"
+       d="M386 398 L451 351 L516 304"
+       id="path32" />
+    <use
+       href="#broadside-blue"
+       transform="translate(386 398) rotate(54)"
+       id="use33" />
+    <use
+       href="#broadside-blue"
+       transform="translate(451 351) rotate(54)"
+       id="use34" />
+    <use
+       href="#broadside-blue"
+       transform="translate(516 304) rotate(54)"
+       id="use35" />
+    <use
+       href="#ship-proj-blue"
+       transform="translate(386 398) rotate(54)"
+       id="use36" />
+    <use
+       href="#ship-proj-blue"
+       transform="translate(451 351) rotate(54)"
+       id="use37" />
+    <use
+       href="#ship-proj-blue"
+       transform="translate(516 304) rotate(54)"
+       id="use38" />
+  </g>
+  <text
+     class="small"
+     x="417.27274"
+     y="271.81818"
+     id="text38">Projected friendly: current heading</text>
+  <g
+     id="g44">
+    <path
+       class="best-line"
+       d="M540 516 L620 516 L700 516"
+       id="path38" />
+    <use
+       href="#broadside-best"
+       transform="translate(540 516) rotate(90)"
+       id="use39" />
+    <use
+       href="#broadside-best"
+       transform="translate(620 516) rotate(90)"
+       id="use40" />
+    <use
+       href="#broadside-best"
+       transform="translate(700 516) rotate(90)"
+       id="use41" />
+    <use
+       href="#ship-best-blue"
+       transform="translate(540 516) rotate(90)"
+       id="use42" />
+    <use
+       href="#ship-best-blue"
+       transform="translate(620 516) rotate(90)"
+       id="use43" />
+    <use
+       href="#ship-best-blue"
+       transform="translate(700 516) rotate(90)"
+       id="use44" />
+  </g>
+  <rect
+     class="badge"
+     x="540.01251"
+     y="586.01251"
+     width="326.15677"
+     height="57.974949"
+     rx="8.2052021"
+     id="rect44" />
+  <text
+     class="panel-title"
+     x="558"
+     y="609"
+     id="text44">Best trial</text>
+  <text
+     class="panel-text"
+     x="558"
+     y="630"
+     id="text45">Right +36 deg sample becomes the desired heading</text>
+  <g
+     opacity="0.86"
+     id="g50">
+    <path
+       class="red-ghost"
+       d="M820 254 L751 294 L682 334"
+       id="path45" />
+    <use
+       href="#broadside-red"
+       transform="translate(820 254) rotate(240)"
+       id="use45" />
+    <use
+       href="#broadside-red"
+       transform="translate(751 294) rotate(240)"
+       id="use46" />
+    <use
+       href="#broadside-red"
+       transform="translate(682 334) rotate(240)"
+       id="use47" />
+    <use
+       href="#ship-proj-red"
+       transform="translate(820 254) rotate(240)"
+       id="use48" />
+    <use
+       href="#ship-proj-red"
+       transform="translate(751 294) rotate(240)"
+       id="use49" />
+    <use
+       href="#ship-proj-red"
+       transform="translate(682 334) rotate(240)"
+       id="use50" />
+  </g>
+  <text
+     class="small"
+     x="646"
+     y="232"
+     id="text50">Projected enemy: current heading only</text>
+</svg>
