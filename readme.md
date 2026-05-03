@@ -42,6 +42,8 @@ Waypoint is a movement aid for steering ships along a plotted route. It is separ
 
 Select a ship, then click **Waypoint (W)** in the top command bar or press **W**. Entering waypoint mode clears that ship's old manual route and asks you to choose a destination. Left-click commits the previewed segment and appends its points to the ship's route. Press **W** again to leave waypoint mode.
 
+<img src="images/Waypoint Movement.svg">
+
 During time advance, the route updates the ship's desired heading:
 
 1. Reached waypoints are removed when the ship is within 50 yards of the leading waypoint.

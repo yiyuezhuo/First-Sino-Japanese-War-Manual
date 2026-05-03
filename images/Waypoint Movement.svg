@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="980"
+   height="801"
+   viewBox="0 0 980 801"
+   role="img"
+   aria-labelledby="title desc"
+   version="1.1"
+   id="svg53"
+   sodipodi:docname="Waypoint Movement.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview53"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.47826087"
+     inkscape:cx="26.136364"
+     inkscape:cy="391"
+     inkscape:window-width="2048"
+     inkscape:window-height="1082"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g53" />
+  <title
+     id="title">Waypoint route guidance timeline</title>
+  <desc
+     id="desc">Three-row diagram showing tactical waypoint movement: steer toward a lookahead point, remove a reached waypoint, then remove a passed corner and continue on the remaining route.</desc>
+  <defs
+     id="defs3">
+    <marker
+       id="arrow-blue"
+       viewBox="0 0 10 10"
+       refX="8.5"
+       refY="5"
+       markerWidth="7"
+       markerHeight="7"
+       orient="auto-start-reverse">
+      <path
+         d="M 0,0 10,5 0,10 Z"
+         fill="#2f6fd6"
+         id="path1" />
+    </marker>
+    <marker
+       id="arrow-cyan"
+       viewBox="0 0 10 10"
+       refX="8.5"
+       refY="5"
+       markerWidth="7"
+       markerHeight="7"
+       orient="auto-start-reverse">
+      <path
+         d="M 0,0 10,5 0,10 Z"
+         fill="#17aebb"
+         id="path2" />
+    </marker>
+    <marker
+       id="arrow-gray"
+       viewBox="0 0 10 10"
+       refX="8.5"
+       refY="5"
+       markerWidth="7"
+       markerHeight="7"
+       orient="auto-start-reverse">
+      <path
+         d="M 0,0 10,5 0,10 Z"
+         fill="#81939f"
+         id="path3" />
+    </marker>
+    <style
+       id="style3">
+      .page { fill: #eaf5fb; }
+      .panel { fill: #f7fbfd; stroke: #b7ccd8; stroke-width: 1.2; }
+      .land { fill: #b9d9a8; }
+      .shore { fill: none; stroke: #689252; stroke-width: 4; stroke-linecap: round; }
+      .shoal { fill: none; stroke: #ffffff; stroke-width: 24; stroke-linecap: round; opacity: 0.56; }
+      .shore-field { fill: none; stroke: #8ed4ee; stroke-width: 3; stroke-dasharray: 7 9; opacity: 0.9; }
+      .route { fill: none; stroke: #17aebb; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
+      .old-route { fill: none; stroke: #7f909c; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 9 9; opacity: 0.42; }
+      .heading { fill: none; stroke: #2f6fd6; stroke-width: 4; stroke-linecap: round; }
+      .title { font: 700 26px &quot;Segoe UI&quot;, Arial, sans-serif; fill: #17324d; }
+      .subtitle { font: 15px &quot;Segoe UI&quot;, Arial, sans-serif; fill: #38586d; }
+      .step-title { font: 700 18px &quot;Segoe UI&quot;, Arial, sans-serif; fill: #17324d; }
+      .label { font: 14px &quot;Segoe UI&quot;, Arial, sans-serif; fill: #17324d; }
+      .small { font: 13px &quot;Segoe UI&quot;, Arial, sans-serif; fill: #4e687b; }
+      .note-box { fill: #ffffff; stroke: #9ab6c7; stroke-width: 1.2; }
+    </style>
+  </defs>
+  <rect
+     width="980"
+     height="920"
+     rx="18"
+     class="page"
+     id="rect3"
+     x="0"
+     y="0" />
+  <g
+     transform="translate(40.181818,26.545455)"
+     id="g20">
+    <rect
+       width="908"
+       height="230"
+       rx="12"
+       class="panel"
+       id="rect4"
+       x="0"
+       y="0" />
+    <text
+       x="22"
+       y="34"
+       class="step-title"
+       id="text5"
+       style="font-style:normal;font-variant:normal;font-weight:700;font-stretch:normal;font-size:18px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">1. Steer toward a lookahead point on the route</text>
+    <path
+       d="M 0,76 C 86,38 155,45 226,79 314,121 402,114 492,66 592,13 737,23 908,82 V 0 H 0 Z"
+       class="land"
+       id="path5" />
+    <path
+       d="M 0,76 C 86,38 155,45 226,79 314,121 402,114 492,66 592,13 737,23 908,82"
+       class="shore"
+       id="path6" />
+    <path
+       d="m 27,108 c 82,-33 154,-30 223,1 81,36 167,25 263,-23 101,-51 220,-42 367,16"
+       class="shoal"
+       id="path7" />
+    <path
+       d="m 30,109 c 82,-32 151,-29 219,1 81,36 167,25 263,-22 100,-51 220,-42 366,15"
+       class="shore-field"
+       id="path8" />
+    <path
+       d="m 78,186 c 100,-58 174,-68 252,-54 110,20 190,-6 280,-28 95,-24 160,2 242,46"
+       class="route"
+       marker-end="url(#arrow-cyan)"
+       id="path9" />
+    <circle
+       cx="330"
+       cy="132"
+       r="12"
+       fill="#ffffff"
+       stroke="#17aebb"
+       stroke-width="3.5"
+       id="circle9" />
+    <circle
+       cx="610"
+       cy="104"
+       r="12"
+       fill="#ffffff"
+       stroke="#17aebb"
+       stroke-width="3.5"
+       id="circle10" />
+    <circle
+       cx="732"
+       cy="98"
+       r="12"
+       fill="#ffffff"
+       stroke="#17aebb"
+       stroke-width="3.5"
+       id="circle11" />
+    <circle
+       cx="852"
+       cy="150"
+       r="12"
+       fill="#ffffff"
+       stroke="#17aebb"
+       stroke-width="3.5"
+       id="circle12" />
+    <circle
+       cx="236"
+       cy="128"
+       r="7"
+       fill="#2f6fd6"
+       stroke="#ffffff"
+       stroke-width="2.5"
+       id="circle13" />
+    <g
+       transform="rotate(-30,381.88457,-81.674337)"
+       id="g13">
+      <path
+         d="M 0,-14 38,0 0,14 8,0 Z"
+         fill="#234a73"
+         stroke="#102842"
+         stroke-width="2.4"
+         id="path13" />
+      <rect
+         x="-6"
+         y="-5"
+         width="12"
+         height="10"
+         rx="1.5"
+         fill="#f3f7fb"
+         stroke="#102842"
+         stroke-width="1.5"
+         id="rect13" />
+    </g>
+    <path
+       d="M 104,178 236,128"
+       class="heading"
+       marker-end="url(#arrow-blue)"
+       id="path14" />
+    <text
+       x="307"
+       y="105"
+       class="label"
+       id="text14"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">WP1</text>
+    <text
+       x="587"
+       y="77"
+       class="label"
+       id="text15"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">WP2</text>
+    <text
+       x="709"
+       y="71"
+       class="label"
+       id="text16"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">WP3</text>
+    <text
+       x="826"
+       y="124"
+       class="label"
+       id="text17"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">Final</text>
+    <text
+       x="248"
+       y="151"
+       class="label"
+       id="text18"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">lookahead</text>
+  </g>
+  <g
+     transform="translate(40.181818,282.54545)"
+     id="g38">
+    <rect
+       width="908"
+       height="230"
+       rx="12"
+       class="panel"
+       id="rect20"
+       x="0"
+       y="0" />
+    <text
+       x="22"
+       y="34"
+       class="step-title"
+       id="text21"
+       style="font-style:normal;font-variant:normal;font-weight:700;font-stretch:normal;font-size:18px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">2. Reached waypoint is removed</text>
+    <path
+       d="M 0,76 C 86,38 155,45 226,79 314,121 402,114 492,66 592,13 737,23 908,82 V 0 H 0 Z"
+       class="land"
+       id="path21" />
+    <path
+       d="M 0,76 C 86,38 155,45 226,79 314,121 402,114 492,66 592,13 737,23 908,82"
+       class="shore"
+       id="path22" />
+    <path
+       d="m 27,108 c 82,-33 154,-30 223,1 81,36 167,25 263,-23 101,-51 220,-42 367,16"
+       class="shoal"
+       id="path23" />
+    <path
+       d="m 30,109 c 82,-32 151,-29 219,1 81,36 167,25 263,-22 100,-51 220,-42 366,15"
+       class="shore-field"
+       id="path24" />
+    <path
+       d="M 78,186 C 178,128 252,118 330,132"
+       class="old-route"
+       id="path25" />
+    <path
+       d="m 330,132 c 110,20 190,-6 280,-28 95,-24 160,2 242,46"
+       class="route"
+       marker-end="url(#arrow-cyan)"
+       id="path26" />
+    <circle
+       cx="330"
+       cy="132"
+       r="30"
+       fill="none"
+       stroke="#2f6fd6"
+       stroke-width="3"
+       stroke-dasharray="7, 8"
+       opacity="0.7"
+       id="circle26" />
+    <circle
+       cx="330"
+       cy="132"
+       r="12"
+       fill="#ffffff"
+       stroke="#7f909c"
+       stroke-width="3.5"
+       opacity="0.75"
+       id="circle27" />
+    <path
+       d="m 316,118 28,28 m 0,-28 -28,28"
+       stroke="#d05b45"
+       stroke-width="3.2"
+       stroke-linecap="round"
+       id="path27" />
+    <circle
+       cx="610"
+       cy="104"
+       r="12"
+       fill="#ffffff"
+       stroke="#17aebb"
+       stroke-width="3.5"
+       id="circle28" />
+    <circle
+       cx="732"
+       cy="98"
+       r="12"
+       fill="#ffffff"
+       stroke="#17aebb"
+       stroke-width="3.5"
+       id="circle29" />
+    <circle
+       cx="852"
+       cy="150"
+       r="12"
+       fill="#ffffff"
+       stroke="#17aebb"
+       stroke-width="3.5"
+       id="circle30" />
+    <circle
+       cx="512"
+       cy="126"
+       r="7"
+       fill="#2f6fd6"
+       stroke="#ffffff"
+       stroke-width="2.5"
+       id="circle31" />
+    <g
+       transform="rotate(5,-1446.1674,4193.6778)"
+       id="g31">
+      <path
+         d="M 0,-14 38,0 0,14 8,0 Z"
+         fill="#234a73"
+         stroke="#102842"
+         stroke-width="2.4"
+         id="path31" />
+      <rect
+         x="-6"
+         y="-5"
+         width="12"
+         height="10"
+         rx="1.5"
+         fill="#f3f7fb"
+         stroke="#102842"
+         stroke-width="1.5"
+         id="rect31" />
+    </g>
+    <path
+       d="M 373,142 512,126"
+       class="heading"
+       marker-end="url(#arrow-blue)"
+       id="path32" />
+    <text
+       x="306"
+       y="101"
+       class="label"
+       id="text32"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">WP1</text>
+    <text
+       x="587"
+       y="77"
+       class="label"
+       id="text33"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">WP2</text>
+    <text
+       x="709"
+       y="71"
+       class="label"
+       id="text34"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">WP3</text>
+    <text
+       x="826"
+       y="124"
+       class="label"
+       id="text35"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">Final</text>
+    <text
+       x="524"
+       y="147"
+       class="label"
+       id="text36"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">new lookahead</text>
+  </g>
+  <g
+     transform="translate(36,618)"
+     id="g53">
+    <rect
+       width="908"
+       height="230"
+       rx="12"
+       class="panel"
+       id="rect38"
+       x="4.181819"
+       y="-79.454544" />
+    <text
+       x="26.18182"
+       y="-45.454544"
+       class="step-title"
+       id="text39"
+       style="font-style:normal;font-variant:normal;font-weight:700;font-stretch:normal;font-size:18px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">3. Passed corner is removed; guidance continues on the remaining route</text>
+    <path
+       d="M 4.1818182,-3.4545454 C 90.181818,-41.454545 159.18182,-34.454545 230.18182,-0.45454541 c 88,42.00000041 176,35.00000041 266,-12.99999959 100,-53 245,-43 416,15.9999996 V -79.454545 H 4.1818182 Z"
+       class="land"
+       id="path39" />
+    <path
+       d="M 4.1818182,-3.4545454 C 90.181818,-41.454545 159.18182,-34.454545 230.18182,-0.45454541 c 88,42.00000041 176,35.00000041 266,-12.99999959 100,-53 245,-43 416,15.9999996"
+       class="shore"
+       id="path40" />
+    <path
+       d="m 31.181818,28.545455 c 82.000002,-33.0000004 154.000002,-30.0000004 223.000002,1 81,36 167,25 263,-23.0000004 101,-50.9999996 220,-41.9999996 367,16.0000004"
+       class="shoal"
+       id="path41" />
+    <path
+       d="m 34.181818,29.545455 c 82.000002,-32.0000004 151.000002,-29.00000041 219.000002,1 81,36 167,25 263,-22.0000004 100,-50.9999996 220,-41.9999996 366,15.0000004"
+       class="shore-field"
+       id="path42" />
+    <path
+       d="m 334.18182,52.545455 c 110,20 190,-6 280,-28 22,-5 46,-6 70,0"
+       class="old-route"
+       id="path43" />
+    <path
+       d="m 684.18182,24.545455 c 20,-8 36,-8 52,-6 43,8 83,28 120,52"
+       class="route"
+       marker-end="url(#arrow-cyan)"
+       id="path44" />
+    <circle
+       cx="614.18176"
+       cy="24.545454"
+       r="12"
+       fill="#ffffff"
+       stroke="#7f909c"
+       stroke-width="3.5"
+       opacity="0.62"
+       id="circle44" />
+    <path
+       d="m 600.18182,10.545455 28,28 m 0,-28 -28,28"
+       stroke="#d05b45"
+       stroke-width="3.2"
+       stroke-linecap="round"
+       id="path45" />
+    <circle
+       cx="736.18176"
+       cy="18.545454"
+       r="12"
+       fill="#ffffff"
+       stroke="#17aebb"
+       stroke-width="3.5"
+       id="circle45" />
+    <circle
+       cx="856.18176"
+       cy="70.545456"
+       r="12"
+       fill="#ffffff"
+       stroke="#17aebb"
+       stroke-width="3.5"
+       id="circle46" />
+    <circle
+       cx="834.18176"
+       cy="56.545456"
+       r="7"
+       fill="#2f6fd6"
+       stroke="#ffffff"
+       stroke-width="2.5"
+       id="circle47" />
+    <g
+       transform="rotate(7,130.08373,5688.1588)"
+       id="g47">
+      <path
+         d="M 0,-14 38,0 0,14 8,0 Z"
+         fill="#234a73"
+         stroke="#102842"
+         stroke-width="2.4"
+         id="path47" />
+      <rect
+         x="-6"
+         y="-5"
+         width="12"
+         height="10"
+         rx="1.5"
+         fill="#f3f7fb"
+         stroke="#102842"
+         stroke-width="1.5"
+         id="rect47" />
+    </g>
+    <path
+       d="m 708.18182,28.545455 126,28"
+       class="heading"
+       marker-end="url(#arrow-blue)"
+       id="path48" />
+    <text
+       x="590.18176"
+       y="-2.4545455"
+       class="small"
+       id="text48"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">WP2</text>
+    <text
+       x="713.18176"
+       y="-8.454545"
+       class="label"
+       id="text49"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">WP3</text>
+    <text
+       x="830.18176"
+       y="44.545456"
+       class="label"
+       id="text50"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">Final</text>
+    <text
+       x="704.18176"
+       y="85.545456"
+       class="label"
+       id="text51"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:'Segoe UI', Arial, sans-serif">new lookahead</text>
+  </g>
+  <metadata
+     id="metadata53">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Waypoint route guidance timeline</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>
