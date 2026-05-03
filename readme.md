@@ -36,6 +36,20 @@ High-level control buttons rewrite the control relationships below the currently
 - **Set Formation to Follow Chain:** opens the **Follow Chain Formation** dialog. After confirming the follow distance, the ships below the selected anchor are flattened into a single chain: anchor, first follower, next follower, and so on. Each ship follows the one immediately ahead of it. This is the quickest way to restore a column.
 - **Reverse Control Chain:** reverses a clean single control chain. Select the independent ship at the head of the chain, then click the button. The last ship becomes independent, and the former leaders become followers behind it. This is handy when a column needs to turn back along its own track. The command only works on a simple one-child-at-each-step chain; if a ship controls multiple ships, the game will ask you to simplify the chain first.
 
+## Waypoint Movement
+
+Waypoint is a movement aid for steering ships along a plotted route. It is separate from formation control: only an **Independent** deployed ship follows its manual route.
+
+Select a ship, then click **Waypoint (W)** in the top command bar or press **W**. Entering waypoint mode clears that ship's old manual route and asks you to choose a destination. Left-click commits the previewed segment and appends its points to the ship's route. Press **W** again to leave waypoint mode.
+
+During time advance, the route updates the ship's desired heading:
+
+1. Reached waypoints are removed when the ship is within 50 yards of the leading waypoint.
+2. If the ship has passed a corner, the leading waypoint is also removed. A corner counts as passed when the ship is close to the following leg or is clearly closer to the next waypoint than to the leading waypoint.
+3. If only one waypoint remains, the desired heading points directly at it.
+4. If several waypoints remain, the game projects the route into local yards around the ship, finds the closest point on the route, then chooses a lookahead point further along it. The lookahead distance is based on speed and clamped between 100 and 600 yards.
+5. The ship's desired heading is set toward that lookahead point, so it tends to follow a smooth route instead of aiming only at the next corner.
+
 ## Range Lines
 
 <img src="images/Range Lines.svg">
