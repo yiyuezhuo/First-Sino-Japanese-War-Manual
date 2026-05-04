@@ -740,7 +740,7 @@ Changing **Ship Type** also recalculates length, beam, draft, and complement fro
 | Vickers Non-Cemented                   |             0.84 | VICKERS HARDENED NON-CEMENTED / VH                       | Q                | Q=0.839                                  | rounded                 |
 | Molybdenum Non-Cemented                |             0.97 | MOLYBDENUM NON-CEMENTED / MNC                            | Average Quality  | 0.97                                     | direct                  |
 
-(The above table is mix of SK5 chart value and their Okun's material derivation: [Table of Metallurgical Properties of Naval Armor and Construction Materials](http://www.navweaps.com/index_nathan/metalprpsept2009.php) )
+(The above table is mix of SK5 chart value and their inferred Okun's material derivation: [Table of Metallurgical Properties of Naval Armor and Construction Materials](http://www.navweaps.com/index_nathan/metalprpsept2009.php) )
 
 For **Battery** records, editing Shell Size or Shell Weight through the editor updates **Damage Rating** as `floor(0.4 + 1.30 * shell size in inches + 0.82 * sqrt(shell weight in pounds) + 0.5)`. The value remains manually editable afterward.
 
@@ -846,45 +846,118 @@ The exterior-ballistic part follows the Army Standard Metro point-mass formulati
 
 ##### Terminal ballistic
 
-The terminal-ballistic model can be read as two layers:
+The terminal-ballistic model treats armor penetration as a ballistic-limit problem. For a candidate plate thickness, it estimates the striking velocity needed for complete penetration; then it inverts that relation to report the maximum plate thickness that the shell can defeat at the computed impact velocity.
 
-- **Okun basis**: the normal ballistic limit calculation is based on Nathan Okun's armor penetration programs, mainly the homogeneous-armor [M79APCLC](https://www.navweaps.com/index_nathan/M79apdoc.php), with [FaceHard](https://www.warship1.cn/navweaps/index_nathan.htm) used as a reference for related projectile, cap, and armor terminology.
-	- For a plate thickness `T`, the Okun-style homogeneous-armor core uses:
-		- `D = max(projectileDiameterInches, 0.1)`.
-		- `td = clamp(T / D, 0.001, 5.99999)`.
-		- `WoverD3 = max(totalWeightPounds / D^3, 1e-9)`.
-		- The embedded `td` tables select `A`, `B`, a sine amplitude, a sine frequency, and a sine phase.
-		- `tdShape = 1 + sineAmplitude * max(sin((td * sineFrequency - sinePhaseDeg) * pi / 180), 0)`.
-		- `diameterScale = sqrt(max(1e-9, 1 - 0.04 * ln(D / 3)))`.
-		- `elongationFactor = 1 - (1 - sqrt(clamp(elongationPercent, 0.1, 25) / 25)) * (max(D, 8) - 8) / 8`.
-		- `baseNBL = A * (max(plateQuality, 0.01) * td)^B * tdShape * diameterScale / sqrt(WoverD3)`.
-	- Obliquity then modifies `baseNBL`:
-		- If obliquity is below `45` degrees, `obliquityMultiplier = interpolate(lowObliquityReferenceVector, obliquity) / cos(obliquity)`.
-		- If obliquity is `45` degrees or higher, `obliquityMultiplier = bilinearInterpolate(highObliquityReferenceMatrix, td, obliquity) / cos(obliquity)`.
-		- `baseNBL *= obliquityMultiplier` when obliquity is above `0.1` degrees.
-- **NAAB-like layer**: the calculator emulates parts of Steven Lorenz's [Naval Armor and Ballistics](http://www.panzer-war.com/Naab/NAaB.html) program so that I can compare result of NAAB's projectile data. The result should be close to NAAB though not identical. 
-	- The armor input is converted into the effective `plateQuality` used by the Okun-style core:
-		- `plateQuality = clamp(armorQuality * HardnessProfile(235) / HardnessProfile(BHN), 0.5, 1.1)`.
-	- Windscreens and AP caps add to NBL through table-based addends:
-		- `windscreenPercent = 100 * windscreenWeightPounds / totalWeightPounds`.
-		- `windscreenAddend = (windscreenPercent / 5.1) * selectedWindscreenMultiplier * interpolatedWindscreenTableValue`, unless the shell has no windscreen or the plate is too thin for that addend.
-		- Hard caps and medium caps use `apCapPercent = 100 * apCapWeightPounds / totalWeightPounds`.
-		- For hard caps, `capRatio = apCapPercent / 20` and the low-obliquity cutoff is `50` degrees.
-		- For medium caps, `capRatio = apCapPercent / 10` and the low-obliquity cutoff is `65` degrees.
-		- The cap threshold is `0.42` above `65` degrees, `0.44 - 0.002 * (obliquity - 55)` above `55` degrees, and `0.66 - 0.18 * (obliquity / 45)` otherwise, rounded to `0.001`.
-		- If `td` is above the threshold and obliquity is below the cap type's cutoff, the cap addend is `capTableValue * (1 + 0.6 * (capRatio - 1))`.
-		- If `td` is not above the threshold and `40 < obliquity < 75`, the shared mid-obliquity cap addend is `sharedCapTableValue * capRatio`.
-	- The final normal ballistic limit is:
-		- `trueNBL = baseNBL * elongationFactor * (1 + windscreenAddend + capAddend)`.
-	- Search for the armor thickness `T` such that `trueNBL(T, obliquity) == impactVelocity`.
-	- `T` is post-scaled by shell quality and extreme obliquity:
-		- If `80 <= obliquity < 90`, `extremeScale = (cos(obliquity) / cos(80))^1.1`; otherwise `extremeScale = 1`.
-		- `postScale = extremeScale * clamp(effectiveShellQuality, 0.2, 1.2)`.
-	- The calculator computes both vertical and horizontal armor penetration from the same impact state:
-		- `sideObliquity = armorInclinedDeg + angleOfFallDeg`.
-		- `deckObliquity = armorInclinedDeg + max(90 - angleOfFallDeg, 0)`.
-		- `verticalPenetration = T(impactVelocity, sideObliquity) * postScale`.
-		- `horizontalPenetration = T(impactVelocity, deckObliquity) * postScale`.
+###### Okun homogeneous-armor basis
+
+The reference model is Nathan Okun's homogeneous-armor work, mainly [M79APCLC](https://www.navweaps.com/index_nathan/M79apdoc.php).
+
+The main geometry term is relative thickness. `D` is projectile diameter, `T` is plate thickness, and `T / D` says whether the plate is thin or thick relative to the shell. This matters because Okun's model changes coefficient sets across different `T / D` regions. Projectile weight enters through `W / D^3`, where `W` is complete projectile weight. This term keeps the formula sensitive to whether a projectile is heavy or light for its caliber.
+
+For a candidate plate thickness `T`, the model selects coefficient tables by `T / D`. These tables provide `A`, `B`, and the parameters for a local shape correction `J(T / D)`. In compact form, the normal-impact Navy Ballistic Limit can be written as:
+
+`NBL = A * J(T / D) * diameterScale(D) * (QA * T / D)^B / sqrt(W / D^3)`.
+
+Here `QA` is the armor quality factor. The `J(T / D)` term is Okun's local Green's-function correction for the thickness curve:
+
+`J(T / D) = 1 + JA * max(sin((JB * T / D - JC) * pi / 180), 0)`.
+
+`JA`, `JB`, and `JC` are selected from the same `T / D` coefficient table as `A` and `B`. Most thickness regions use `J = 1`; where it is active, it bends the local curve above or below the plain power-law result. The diameter scale follows Okun's caliber-scaling term:
+
+`diameterScale = sqrt(max(1e-9, 1 - 0.04 * ln(D / 3)))`.
+
+Percent elongation `PE` is a separate armor-material input. In the Okun reference model it only changes the result when `PE < 25` and `D > 8`. Written as a reusable multiplier:
+
+`elongationFactor = 1 - (1 - sqrt(PE / 25)) * (D - 8) / 8`.
+
+At full ductility or for smaller projectiles, this multiplier is `1`.
+
+Obliquity then adjusts the ballistic limit. Obliquity is measured from the armor normal: `0` degrees is a square hit, and higher values are more glancing. Okun's M79 model interpolates an obliquity reference value `M'`; below `45` degrees this depends only on obliquity, while at `45` degrees and above it also depends on `T / D`. The final obliquity multiplier is:
+
+`obliquityMultiplier = M' / cos(obliquity)`.
+
+The reference model therefore answers one question: for this shell, armor quality, plate thickness, and obliquity, what striking velocity is needed for complete penetration? Penetration thickness is the inverse question: given an impact velocity, find the greatest `T` whose ballistic limit can still be reached.
+
+###### NAAB-like adaptations in this calculator
+
+The calculator try to emulate Steven Lorenz's [Naval Armor and Ballistics program (NAAB)](http://www.panzer-war.com/Naab/NAaB.html)'s homogeneous armor calculation, so that I can compare game data with NAAB's projectile data. In current stage, the result is close to NAAB's result but not identical.
+
+**plateQuality** correction:
+
+Conceptually, the calculator evaluates the Okun NBL with neutral `QA = 1`, then replaces Okun's direct QA effect with a `plateQualityModifier`.
+
+```
+plateQuality = clamp(armorQuality * HardnessProfile(235) / HardnessProfile(BHN), 0.5, 1.1)
+plateQualityModifier = (max(plateQuality, 0.01) * td)^B / td^B
+baseNBL = NBL * plateQualityModifier
+```
+
+Here, NBL means the Okun NBL evaluated with QA = 1, using the calculator's clamped inputs.
+
+**windscreenAddend** correction:
+
+A windscreen uses:
+
+`windscreenPercent = 100 * windscreenWeightPounds / totalWeightPounds`.
+
+The addend is skipped when `windscreenPercent <= 0.1`, or when the thin-plate suppression rule applies. Otherwise, the calculator chooses `windscreenMultiplier` from the projectile's normal or high-obliquity windscreen multiplier fields, depending on the current obliquity. It then reads `windscreenTableValue` from the embedded windscreen table by `td` and obliquity. The windscreen contribution is:
+
+`windscreenAddend = (windscreenPercent / 5.1) * windscreenMultiplier * windscreenTableValue`.
+
+**capAddend** correction:
+
+Hard and medium AP caps use a separate cap addend. Other cap types are kept as projectile metadata, but this terminal formula applies cap addends only to hard and medium caps.
+
+`apCapPercent = 100 * apCapWeightPounds / totalWeightPounds`.
+
+| Cap type   |          `capRatio` | Low-obliquity cutoff |
+| ---------- | ------------------: | -------------------: |
+| Hard cap   | `apCapPercent / 20` |         `50` degrees |
+| Medium cap | `apCapPercent / 10` |         `65` degrees |
+
+The `td` threshold is rounded to `0.001`:
+
+| Obliquity condition |                         Threshold |
+| ------------------- | --------------------------------: |
+| `obliquity > 65`    |                            `0.42` |
+| `obliquity > 55`    | `0.44 - 0.002 * (obliquity - 55)` |
+| otherwise           |  `0.66 - 0.18 * (obliquity / 45)` |
+
+If `td = clamp(T / D, 0.001, 5.99999)` is above that threshold and obliquity is below the cap type's cutoff, the cap addend is:
+
+`capAddend = capTableValue * (1 + 0.6 * (capRatio - 1))`.
+
+If `td` is not above the threshold and `40 < obliquity < 75`, the shared mid-obliquity cap addend is:
+
+`capAddend = sharedCapTableValue * capRatio`.
+
+**trueNBL** and penetration **T**:
+
+After these additions, the calculator's complete ballistic limit is:
+
+`trueNBL = baseNBL * (1 + windscreenAddend + capAddend)`.
+
+`trueNBL` is actually a function of plate thickness `T` and `obliquity`: `trueNBL(T, obliquity)`. 
+So, given the equation `impactVelocity = trueNBL(T, obliquity)`, we can inversely solve for `T` as `T = Penetration(impactVelocity, obliquity)`. 
+In the calculator, the solution is found by approximate search rather than analytically.
+
+**postScale** correction:
+
+The `T` is post-scaled by shell quality and extreme obliquity:
+
+`postScale = extremeScale * clamp(effectiveShellQuality, 0.2, 1.2)`.
+
+For `80 <= obliquity < 90`, `extremeScale = (cos(obliquity) / cos(80))^1.1`; otherwise it is `1`.
+
+The calculator reports both vertical and horizontal penetration from the same impact state:
+
+`sideObliquity = armorInclinedDeg + angleOfFallDeg`.
+
+`deckObliquity = armorInclinedDeg + max(90 - angleOfFallDeg, 0)`.
+
+`verticalPenetration = Penetration(impactVelocity, sideObliquity) * postScale`.
+
+`horizontalPenetration = Penetration(impactVelocity, deckObliquity) * postScale`.
 
 ##### Parameter meanings
 
@@ -912,13 +985,13 @@ The terminal-ballistic model can be read as two layers:
 - **Effective Shell Quality**: final post-scale for terminal penetration, clamped to `0.2` through `1.2`.
 - **Integration Step**: horizontal integration step in feet. Smaller values are slower but more precise.
 - **Elevation Mode**:
-  - **Range**: fires a series of fixed elevations from Start Elevation to End Elevation by Elevation Step.
-  - **Search Fix**: solves the low-angle firing solution at regular range intervals set by Range Step.
-  - **Search SK5**: solves the low-angle firing solution at SK5 penetration-table ranges, or at the default SK5 range list when no source table is available.
+	- **Range**: fires a series of fixed elevations from Start Elevation to End Elevation by Elevation Step.
+	- **Search Fix**: solves the low-angle firing solution at regular range intervals set by Range Step.
+	- **Search SK5**: solves the low-angle firing solution at SK5 penetration-table ranges, or at the default SK5 range list when no source table is available.
 - **Plot Mode**:
-  - **None**: only the result list is shown.
-  - **Trajectories**: plots shell trajectories. When many rows exist, the chart shows representative first, middle, and last trajectories.
-  - **Penetration**: plots horizontal and vertical penetration against range.
+	- **None**: only the result list is shown.
+	- **Trajectories**: plots shell trajectories. When many rows exist, the chart shows representative first, middle, and last trajectories.
+	- **Penetration**: plots horizontal and vertical penetration against range.
 
 #### Usage
 
