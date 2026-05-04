@@ -808,41 +808,95 @@ The calculator has two connected models: an exterior ballistic model that finds 
 
 ##### Exterior ballistic
 
-The exterior-ballistic part follows the Army Standard Metro point-mass formulation described in Robert L. McCoy's [Modern Exterior Ballistics](https://www.mori.bz.it/Balistica/Mc%20Coy%20Modern%20Exterior%20Ballistic.pdf), Chapter 8, especially the standard-atmosphere discussion on pages `165`-`168` and the MCTRAJ Q-BASIC reference program on pages `183`-`185`.
+Exterior ballistic follows the point-mass trajectory formulation described in Robert L. McCoy's [Modern Exterior Ballistics](https://www.mori.bz.it/Balistica/Mc%20Coy%20Modern%20Exterior%20Ballistic.pdf), Chapter 8, especially the standard-atmosphere discussion on pages `165`-`168` and the MCTRAJ Q-BASIC reference program on pages `183`-`186`.
 
-- The initial state is built from muzzle velocity and gun elevation:
-	- `theta = elevationDeg * pi / 180`.
-	- `vx = muzzleVelocityFeetPerSecond * cos(theta)`.
-	- `vy = muzzleVelocityFeetPerSecond * sin(theta)`.
-	- `x = 0`, `y = 0`, `time = 0`.
-- At each height `h` in feet, the pre-1962 atmosphere approximation is:
-	- `temperatureRankine = 518.67 * exp((-6.015e-06) * h) + 1e-10`.
-	- `soundFeetPerSecond = sqrt(temperatureRankine) * 49.19 + 1e-10`.
-	- `densityRatio = exp((-3.158e-05) * h)`.
-	- `radiusMeters = 6378135 + h * 0.3048`.
-	- `gravityFeetPerSecondSquared = (3.989411596224e14 / radiusMeters^2) / 0.3048`.
-- The shell speed and Mach number are:
-	- `speed = sqrt(vx^2 + vy^2)`.
-	- `mach = speed / soundFeetPerSecond`.
-- The selected drag function (`G1`, `G2`, `G5`, `G6`, `G7`, `G8`, `G9`, `GS`, or `GL`) supplies `cdRef` by interpolation from embedded drag tables.
-- The effective ballistic coefficient is normally `BC`. If **Drag Coefficient** is non-zero, the calculator adjusts only while `Mach > 1`. Before the shell first reaches `Mach <= 1`, the range term is simply current range. If a later state has already recorded a `Mach <= 1` crossing and then returns to `Mach > 1`, the solver uses:
-	- `rangeTerm = abs(firstMachLeOneRangeFeet + firstMachGtOneAfterThatRangeFeet - currentRangeFeet)`.
-	- `BCeff = max(0.01, BC + dragCoefficientAdjust * rangeTerm / 600000)`.
-- The differential equations are expressed against horizontal distance `x`, not directly against time:
-	- `dragSlope = 0.0002048757 * densityRatio * cdRef * speed / BCeff`.
-	- `dy/dx = vy / vx`.
-	- `dvx/dx = -dragSlope`.
-	- `dvy/dx = (dvx/dx) * (vy / vx) - gravityFeetPerSecondSquared / vx`.
-	- `dt/dx = 1 / vx`.
-- Integration uses the **Integration Step** field as a fixed horizontal step `dx` in feet. Each step first predicts an Euler point, then uses the average of the starting and predicted slopes:
-	- `nextValue = currentValue + 0.5 * dx * (slopeAtCurrent + slopeAtPredicted)`.
-- For a ground-impact run, the solver continues until the shell crosses `y = 0`, `time > 300`, the horizontal velocity collapses, or the simulation range limit is reached. The impact point is linearly interpolated between the last positive-height state and the first non-positive-height state.
-- The exterior result is:
-	- `rangeYards = impactXFeet / 3`.
-	- `timeOfFlightSeconds = impactTime`.
-	- `impactVelocityFeetPerSecond = sqrt(impactVx^2 + impactVy^2)`.
-	- `angleOfFallDeg = max(atan2(-impactVy, impactVx) * 180 / pi, 0)`.
-- When solving for a requested target range rather than firing to the ground at a fixed elevation, the solver searches for the low-angle firing solution. It scans elevation windows, brackets the requested range, and refines the elevation until the target range is reached.
+Some NAAB-like adaptation (like the drag coef) is added.
+
+###### McCoy/MCTRAJ point-mass basis
+
+MCTRAJ treats the shell as a point mass with three velocity components. It tracks downrange distance, height, lateral deflection, time, and the velocity components `vx`, `vy`, and `vz`. It can also include a range wind and a crosswind. In the original program, gun elevation is entered in minutes of angle, and the initial state is:
+
+```
+theta = elevationMinutes / 3437.74677
+vx = muzzleVelocityFeetPerSecond * cos(theta)
+vy = muzzleVelocityFeetPerSecond * sin(theta)
+vz = 0
+range = 0
+height = -sightHeightInches / 12
+deflection = 0
+time = 0
+```
+
+MCTRAJ provides two atmosphere coefficient sets: Army Standard Metro and ICAO Standard Atmosphere. The calculator uses the Army Standard Metro branch, whose visible MCTRAJ constants are:
+
+```
+RH1 = -0.00003158
+RH2 = 0
+TK1 = -0.000006015
+TK2 = 0
+PIR = 0.0002048757
+VV1 = 49.19
+```
+
+For a height `h` in feet, MCTRAJ computes local air temperature, sound speed, and density scaling from those coefficients:
+
+```
+temperatureF = (inputTemperatureF + 459.67) * exp((TK1 + TK2 * h) * h) - 459.67
+soundFeetPerSecond = VV1 * sqrt(temperatureF + 459.67)
+densityScale = exp((RH1 + RH2 * h) * h)
+```
+
+The "drag function" in MCTRAJ is an input table of Mach number versus drag coefficient `CD`, not a hard-coded `G1` or `G7` curve. The program linearly interpolates that table:
+
+```
+CD = CD_i + (CD_{i+1} - CD_i) / (Mach_{i+1} - Mach_i) * (Mach - Mach_i)
+```
+
+For each range step, the program computes relative air speed against wind, converts it to Mach number, reads `CD`, and scales drag by ballistic coefficient `BC`:
+
+```
+relativeSpeed = sqrt((vx - rangeWind)^2 + vy^2 + (vz - crosswind)^2)
+mach = relativeSpeed / soundFeetPerSecond
+dragFactor = PIR * densityRatioInput * CD * relativeSpeed * densityScale / BC
+```
+
+The trajectory is integrated against downrange distance, not directly against time. MCTRAJ uses a second-order Heun predictor-corrector method: it first predicts the next velocity with an Euler step, then repeatedly corrects the result until the relative velocity change is below `0.00001`.
+
+This basis answers one question: for a given muzzle velocity, elevation, Mach-CD drag table, ballistic coefficient, atmosphere, and wind, what trajectory does the shell follow? MCTRAJ can also adjust elevation until the trajectory passes through a requested match range and match height.
+
+###### NAAB-like adaptations in this calculator
+
+The calculator keeps the McCoy/MCTRAJ point-mass structure, but adapts it for NAAB-style projectile data and this project's penetration-table fitting.
+
+- **2D reduction**: the calculator uses MCTRAJ's vertical-plane special case, tracking `x`, `y`, `vx`, `vy`, and time while omitting crosswind, lateral deflection, range wind, and sight-line height.
+- **Atmosphere and gravity**: the calculator uses the Army Standard Metro-style constants from MCTRAJ rather than exposing the ICAO branch; unlike MCTRAJ's fixed `G = 32.174`, it computes gravity from Earth radius and Earth gravitational parameter.
+- **Drag function**: the selected drag function (`G1`, `G2`, `G5`, `G6`, `G7`, `G8`, `G9`, `GS`, or `GL`) supplies `cdRef` from embedded drag tables, which function as named versions of MCTRAJ's user-entered Mach-CD table.
+- **Numerical integration**: MCTRAJ's default `DINT = 1` yard corresponds to `D3 = 3` feet, matching the calculator's default `dxFeet = 3`; the calculator uses one predictor-corrector pass per step rather than MCTRAJ's iterative Heun correction loop.
+
+**Drag Coefficient adjustment**:
+
+The effective ballistic coefficient is normally `BC`. If **Drag Coefficient** is non-zero, the calculator changes `BC` with range while the shell is supersonic:
+
+`BCeff = max(0.01, BC + dragCoefficientAdjust * rangeTerm / 600000)`.
+
+Before the shell first reaches `Mach <= 1`, `rangeTerm` is the current range. If a later state has already recorded a `Mach <= 1` crossing and then returns to `Mach > 1`, the solver uses:
+
+`rangeTerm = abs(firstMachLeOneRangeFeet + firstMachGtOneAfterThatRangeFeet - currentRangeFeet)`.
+
+With this adaptation, the drag slope becomes:
+
+`dragSlope = 0.0002048757 * densityRatio * cdRef * speed / BCeff`.
+
+For a ground-impact run, the solver continues until the shell crosses `y = 0`, `time > 300`, the horizontal velocity collapses, or the simulation range limit is reached. The impact point is linearly interpolated between the last positive-height state and the first non-positive-height state.
+
+The exterior result passed to the terminal model is:
+
+```
+rangeYards = impactXFeet / 3
+timeOfFlightSeconds = impactTime
+impactVelocityFeetPerSecond = sqrt(impactVx^2 + impactVy^2)
+angleOfFallDeg = max(atan2(-impactVy, impactVx) * 180 / pi, 0)
+```
 
 ##### Terminal ballistic
 
