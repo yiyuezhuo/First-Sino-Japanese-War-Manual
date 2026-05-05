@@ -798,7 +798,7 @@ For **Rapid Firing Battery**, the optional metadata stores shell size and shell 
 
 ### NAAB-like Calculator
 
-The **NAAB-like Calculator** is a shell trajectory and armor penetration tool inspired by [Naval Armor and Ballistics program](http://www.panzer-war.com/Naab/NAaB.html). It can be opened from the main menu for standalone experiments, or from a Battery record's metadata when fitting SK5 penetration table data back into a ship class.
+The **NAAB-like Calculator** is a shell trajectory and armor penetration tool emulating [Naval Armor and Ballistics program](http://www.panzer-war.com/Naab/NAaB.html). It can be opened from the main menu for standalone experiments, or from a Battery record's metadata when fitting SK5 penetration table data back into a ship class.
 
 <img src="images/NAAB-like calculator.jpg">
 
@@ -820,22 +820,22 @@ Although the calculator is intended to approximate NAAB (so that I can compare N
 - **Inclined (deg)**: extra obliquity added to side and deck penetration calculations.
 - **Projectile Preset**: fills the shell fields with a known projectile.
 - **Diameter**: shell caliber in inches.
-- **Total Weight**: complete projectile weight in pounds, used in `W / D^3`.
-- **Body Weight**: shell body weight. It is stored with the projectile data and is useful for comparing shell designs.
-- **Windscreen**: windscreen weight in pounds, converted to `windscreenPercent`.
-- **AP Cap Weight**: armor-piercing cap weight in pounds, converted to `apCapPercent`.
-- **Cap Type**: `None`, `Hard Cap`, `Medium Cap`, `Soft Cap`, or `Hood`. The current terminal formula applies cap addends only to hard and medium caps.
+- **Total Weight**: complete projectile weight in pounds.
+- **Body Weight**: shell body weight.
+- **Windscreen**: windscreen weight in pounds.
+- **AP Cap Weight**: armor-piercing cap weight in pounds.
+- **Cap Type**: `None`, `Hard Cap`, `Medium Cap`, `Soft Cap`, or `Hood`.
 - **Windscreen NBL Addend Multiplier**: normal multiplier for the windscreen NBL addend.
 - **Hi-Obl Windscreen NBL Addend Mult.**: alternate windscreen multiplier used above the high-obliquity threshold.
 - **High-Obliquity Threshold**: obliquity where the high-obliquity windscreen multiplier starts to apply. A non-positive value disables the alternate multiplier.
 - **Muzzle Velocity**: launch velocity in feet per second.
 - **Max Range**: maximum range in yards. It is used as the simulation limit, the maximum-range fitting target, and the Battery record range during Sync Back.
 - **Max Elevation**: maximum gun elevation in degrees.
-- **Drag Function**: reference drag curve used for `cdRef`.
-- **Ballistic Coefficient**: main exterior ballistic tuning parameter.
-- **Drag Coefficient**: optional range-dependent adjustment to the ballistic coefficient.
+- **Drag Function**: reference drag curve.
+- **Ballistic Coefficient**: The higher the value, the lower the air resistance. When the projectile is scaled proportionally (e.g., 5'' → 10''), this value should also scale proportionally (e.g., 3 → 6).
+- **Drag Coefficient**: NAAB-like optional range-dependent adjustment to the ballistic coefficient.
 - **Effective Shell Quality**: final post-scale for terminal penetration, clamped to `0.2` through `1.2`.
-- **Integration Step**: horizontal integration step in feet. Smaller values are slower but more precise.
+- **Integration Step**: horizontal integration step in feet.
 - **Elevation Mode**:
 	- **Range**: fires a series of fixed elevations from Start Elevation to End Elevation by Elevation Step.
 	- **Search Fix**: solves the low-angle firing solution at regular range intervals set by Range Step.
@@ -847,63 +847,64 @@ Although the calculator is intended to approximate NAAB (so that I can compare N
 
 #### Usage
 
-- **Simple use without SK5 Data**:
-	- Open **NAAB-like Calculator** from the main menu.
-	- On the **Ballistic** tab, choose a projectile preset and an armor preset, or enter the projectile and armor parameters manually.
-	- Use **Elevation Mode** to decide what rows are generated:
-		- **Range** is best for seeing what a fixed set of elevations does. It is useful for comparing trajectory shapes.
-		- **Search Fix** is best for penetration curves at evenly spaced distances.
-		- **Search SK5** is still usable without SK5 data; it uses the standard SK5 distance list and includes Max Range when needed.
-	- Use **Plot Mode** to choose the chart:
-		- **Trajectories** shows range versus height.
-		- **Penetration** shows range versus horizontal and vertical penetration.
-	- Press **Calculate**. The result table columns are:
-		- **Range**: impact range in yards, or the requested target range when the solver is in a search mode.
-		- **Horizontal Pen**: calculated deck/horizontal penetration in inches. Without SK5 comparison data it is displayed as a single value.
-		- **Vertical Pen**: calculated side/vertical penetration in inches. Without SK5 comparison data it is displayed as a single value.
-		- **ROF**: calculated rounds per two minutes when SK5 comparison context exists. The formula is `min(120 / (timeOfFlight + fallToNextFireSeconds), maxRateOfFireShootPerMin * 2)`.
-		- **Range Band**: range band inferred from angle of fall. The thresholds are **Short** below `7` degrees, **Medium** from `7` to `20` degrees, **Long** above `20` through `40` degrees, and **Extreme** above `40` degrees.
-		- **Impact Velocity**: impact speed in feet per second.
-		- **Angle of Fall**: downward impact angle in degrees.
-		- **Time of Flight**: flight time in seconds.
-		- **Elevation**: gun elevation used to reach that row.
+##### Simple use without SK5 Data
 
-- **SK5 fitting workflow**:
-	- Open the **Ship Class Editor**, go to the relevant **Battery** record, and press **Meta Info**.
-	- In the metadata dialog, enable **Has Meta Info** if needed. The dialog stores the NAAB-like projectile seed for this Battery record. If metadata is created from an existing Battery record, shell size, shell weight, and range are used to initialize the projectile.
-	- Press **Open NAAB-like Calculator** from the metadata dialog. This launch mode is different from the simple main-menu mode because the calculator is now tied to the source Battery record and can compare against, fit, and sync back SK5 data.
-	- On the **SK5 Data** tab, review or edit the source penetration rows:
-	    - **Range Band**: SK5 range band for the row.
-	    - **Distance Yards**: row distance in yards. During fitting, the last row uses Battery Max Range as the target range, because Battery penetration rows are threshold rows.
-	    - **Rate of Fire**: SK5 rounds per two minutes for the row.
-	    - **Hor Pen**: SK5 horizontal penetration in inches.
-	    - **Vert Pen**: SK5 vertical penetration in inches.
-	    - **Max ROF**: gun mechanical maximum rate of fire in shots per minute. The calculator converts it to rounds per two minutes with `maxRateOfFireShootPerMin * 2`.
-	    - **Fall To Next Fire (s)**: delay added after shell fall before the next firing cycle. It participates in `120 / (timeOfFlight + fallToNextFireSeconds)`.
-	- Fit the exterior ballistics first:
-		- Set a reasonable projectile, muzzle velocity, max range, max elevation, drag function, drag coefficient adjustment, and integration step.
-		- Press **Fit External Ballistic**.
-		- The fit adjusts **Ballistic Coefficient**. **Drag Coefficient** remains fixed, so use it manually when a single ballistic coefficient cannot match both the short-range and long-range behavior.
-		- For each SK5 row, the solver predicts the angle of fall and converts it to a range band. The range-band score is `bandDelta^2 * 10`, with a failed solution counted as `100`.
+- Open **NAAB-like Calculator** from the main menu.
+- On the **Ballistic** tab, choose a projectile preset and an armor preset, or enter the projectile and armor parameters manually.
+- Press **Calculate**. The result table columns are:
+	- **Range**: impact range in yards, or the requested target range when the solver is in a search mode.
+	- **Horizontal Pen**: calculated deck/horizontal penetration in inches. With SK5 comparison data available, comparison data is displayed as well.
+	- **Vertical Pen**: calculated side/vertical penetration in inches. With SK5 comparison data available, comparison data is displayed as well.
+	- **ROF**: calculated rounds per two minutes when SK5 comparison context exists. The formula is `min(120 / (timeOfFlight + fallToNextFireSeconds), maxRateOfFireShootPerMin * 2)`.
+	- **Range Band**: range band inferred from angle of fall. The thresholds are **Short** below `7` degrees, **Medium** from `7` to `20` degrees, **Long** above `20` through `40` degrees, and **Extreme** above `40` degrees.
+	- **Impact Velocity**: impact speed in feet per second.
+	- **Angle of Fall**: downward impact angle in degrees.
+	- **Time of Flight**: flight time in seconds.
+	- **Elevation**: gun elevation used to reach that row.
+
+##### SK5 fitting workflow
+
+Fitting is used to explore connection between SK5 penetration table and calculator's penetration table.
+
+- Open the **Ship Class Editor**, go to the relevant **Battery** record, and press **Meta Info**.
+- In the metadata dialog, enable **Has Meta Info** if needed. The dialog display the NAAB-like projectile metadata for this Battery record. If metadata is created from an existing Battery record, shell size, shell weight, and range are used to initialize the projectile. 
+- Except for the calculator's internal parameters that will be optimized later (**Ballistic Coefficient, Drag Coefficient, Projectile Quality**), all other physical metadata parameters not covered by the SK5 data (such as muzzle velocity, drag function, etc.) should be filled in as completely as possible. Their current default values correspond to 5-inch shells from the ironclad era, and the further they deviate from that context, the less accurate they become.
+- Press **Open NAAB-like Calculator** from the metadata dialog. This launch mode is different from the simple main-menu mode because the calculator is now tied to the source Battery record and can compare against, fit, and sync back SK5 data.
+- On the **SK5 Data** tab, review the source penetration rows:
+	- **Range Band**: SK5 range band for the row.
+	- **Distance Yards**: row distance in yards. During fitting, the last row uses Battery Max Range as the target range, because Battery penetration rows are threshold rows.
+	- **Rate of Fire**: SK5 rounds per two minutes for the row.
+	- **Hor Pen**: SK5 horizontal penetration in inches.
+	- **Vert Pen**: SK5 vertical penetration in inches.
+	- **Max ROF**: gun mechanical maximum rate of fire in shots per minute. The calculator converts it to rounds per two minutes with `maxRateOfFireShootPerMin * 2`.
+	- **Fall To Next Fire (s)**: delay added after shell fall before the next firing cycle. It participates in `120 / (timeOfFlight + fallToNextFireSeconds)`.
+- Fit the exterior ballistics:
+	- Press **Fit External Ballistic**.
+	- The fit adjusts **Ballistic Coefficient** (**Drag Coefficient** remains fixed) to optimize:
+		- For each SK5 row, the solver predicts the angle of fall and converts it to a range band. The range-band score is `bandDelta^2 * 10` (e.g. short -> medium => bandDelta=1), with a failed solution counted as `100`.
 		- The max-range score is `(predictedMaxRange - MaxRange)^2 / MaxRange^2 * 250`, with a failed max-range solution counted as `250`.
-		- The best ballistic coefficient is applied back to the visible fields and the calculator reruns.
-	- Fit the terminal ballistics second:
-		- After the exterior fit is close enough, press **Fit Terminal Ballistic**.
-		- The fit adjusts **Effective Shell Quality**.
-		- For each SK5 row, the calculator computes vertical and horizontal penetration from the fitted impact velocity and angle of fall.
-		- The score is the sum of squared relative errors: if the SK5 value is positive, `((calculated - SK5) / SK5)^2`; if the SK5 value is non-positive, a non-positive calculated value scores `0` and any positive calculated value scores `1`.
-		- The best shell quality is applied back to the visible fields and the calculator reruns.
-	- Inspect the comparison results:
-		- When SK5 data is present, **Horizontal Pen** and **Vertical Pen** are displayed as `calculated/SK5 in`.
-		- **ROF** is displayed as `calculated/SK5`.
-		- **Range Band** is displayed as `calculated/SK5`.
-		- If the exterior range bands are off, adjust exterior parameters and refit. If the penetration numbers are off after the exterior fit is acceptable, adjust armor or projectile terminal parameters and refit shell quality.
-	- Sync the fitted data back:
-		- Use **Round Sync Back Values To 1 Decimal** when you want the Battery record to keep SK5-style one-decimal penetration and ROF values.
-		- Press **Sync Back**. This is only available when the calculator was opened from a Battery metadata dialog.
-		- Confirm the summary of added, deleted, and changed rows.
-		- Sync Back writes Battery Max Range, Max ROF, Shell Size, Shell Weight, the Battery penetration table, the stored NAAB-like projectile metadata, and Fall To Next Fire.
-		- The generated penetration table uses calculated range, calculated ROF, calculated range band, horizontal penetration, and vertical penetration. If a calculated row is the Battery max range, its table distance is stored as the next SK5 threshold row while the actual max range remains on the Battery record.
+	- The best ballistic coefficient is applied back to the visible fields and the calculator reruns.
+- Fit the terminal ballistics:
+	- After the exterior fit is close enough, press **Fit Terminal Ballistic**.
+	- The fit adjusts **Effective Shell Quality**.
+	- For each SK5 row, the calculator computes vertical and horizontal penetration from the fitted impact velocity and angle of fall.
+	- The score is the sum of squared relative errors: `((calculated - SK5) / SK5)^2`; 
+	- The best shell quality is applied back to the visible fields and the calculator reruns.
+- Inspect the comparison results:
+	- When SK5 data is present, **Horizontal Pen** and **Vertical Pen** are displayed as `calculated/SK5 in`.
+	- **ROF** is displayed as `calculated/SK5`.
+	- **Range Band** is displayed as `calculated/SK5`.
+	- If the exterior range bands are off, adjust exterior parameters and refit. If the penetration numbers are off after the exterior fit is acceptable, adjust armor or projectile terminal parameters and refit shell quality.
+- Sync the fitted data back:
+	- Use **Round Sync Back Values To 1 Decimal** when you want the Battery record to keep SK5-style one-decimal penetration and ROF values.
+	- Press **Sync Back**. This is only available when the calculator was opened from a Battery metadata dialog.
+	- Confirm the summary of added, deleted, and changed rows.
+	- Sync Back writes Battery Max Range, Max ROF, Shell Size, Shell Weight, the Battery penetration table, the stored NAAB-like projectile metadata, and Fall To Next Fire.
+	- The generated penetration table uses calculated range, calculated ROF, calculated range band, horizontal penetration, and vertical penetration.
+
+##### NAAB-like projectile to SK5
+
+When 
 
 ### Existing weapon selector
 
